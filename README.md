@@ -14,6 +14,7 @@ Pydantic v2 — data validation and serialization
 Pytest — automated testing
 
 
+
 📁 Project Structure
 inventario/
 ├── app/
@@ -26,12 +27,13 @@ inventario/
 │       ├── products.py  # Product endpoints
 │       └── sales.py     # Sales endpoints
 └── tests/
-    ├── test_products.py
-    └── test_sales.py
+├── test\_products.py
+└── test\_sales.py
 
 🚀 Getting Started
+
 1. Clone the repository
-bashgit clone https://github.com/your-username/inventory-api.git
+bashgit clone https://github.com/Shaco10/inventory-api.git
 cd inventory-api
 2. Install dependencies
 bashpip install fastapi sqlalchemy uvicorn httpx pytest pydantic
@@ -52,12 +54,12 @@ MethodEndpointDescriptionPOST/sales/Register a sale (reduces stock automatically
 ✅ Running Tests
 bashpytest tests/ -v
 Expected output:
-tests/test_products.py::test_create_product        PASSED
-tests/test_sales.py::test_sale_success             PASSED
-tests/test_sales.py::test_sale_insufficient_stock  PASSED
-tests/test_sales.py::test_sale_product_not_found   PASSED
+tests/test\_products.py::test\_create\_product        PASSED
+tests/test\_sales.py::test\_sale\_success             PASSED
+tests/test\_sales.py::test\_sale\_insufficient\_stock  PASSED
+tests/test\_sales.py::test\_sale\_product\_not\_found   PASSED
 
-4 passed in ~1s
+4 passed in \~1s
 
 🔍 Key Features
 
@@ -82,6 +84,7 @@ Pydantic v2 — validación y serialización de datos
 Pytest — testing automatizado
 
 
+
 📁 Estructura del proyecto
 inventario/
 ├── app/
@@ -94,12 +97,13 @@ inventario/
 │       ├── products.py  # Endpoints de productos
 │       └── sales.py     # Endpoints de ventas
 └── tests/
-    ├── test_products.py
-    └── test_sales.py
+├── test\_products.py
+└── test\_sales.py
 
 🚀 Cómo correrlo
+
 1. Clonar el repositorio
-bashgit clone https://github.com/tu-usuario/inventory-api.git
+bashgit clone https://github.com/Shaco10/inventory-api.git
 cd inventory-api
 2. Instalar dependencias
 bashpip install fastapi sqlalchemy uvicorn httpx pytest pydantic
@@ -120,9 +124,10 @@ MétodoEndpointDescripciónPOST/sales/Registrar una venta (descuenta stock autom
 ✅ Correr los tests
 bashpytest tests/ -v
 Resultado esperado:
-tests/test_products.py::test_create_product        PASSED
-tests/test_sales.py::test_sale_success             PASSED
-tests/test_sales.py::test_sale_insufficient_stock  PASSED
-tests/test_sales.py::test_sale_product_not_found   PASSED
+tests/test\_products.py::test\_create\_product        PASSED
+tests/test\_sales.py::test\_sale\_success             PASSED
+tests/test\_sales.py::test\_sale\_insufficient\_stock  PASSED
+tests/test\_sales.py::test\_sale\_product\_not\_found   PASSED
 
-4 passed en ~1s
+4 passed en \~1s
+
