@@ -1,7 +1,11 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import OAuth2PasswordRequestForm
+from fastapi import HTTPException
+
 from app.database import engine, Base
 from app.routers import products, sales
+from app.auth import USERS, verify_password, create_token, get_current_user
 
 app = FastAPI(title="Inventario API")
 
@@ -14,6 +18,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(products.router)
-app.include_router(sales.router)
+@app.post("/token")
+def login(form: OAuth2PasswordRequestForm = Depends()):
+    user = USERS.get(form.username)
+    if not user or not verify_password(form.password, user["password"]):
+        raise HTTPException(status_code=401, detail="Usuario o contraseña incorrectos")
+    token = create_token({"sub": form.username})
+    return {"access_token": token, "token_type": "bearer"}
 
+app.include_router(products.router, dependencies=[Depends(get_current_user)])
+app.include_router(sales.router, dependencies=[Depends(get_current_user)])
