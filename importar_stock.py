@@ -3,6 +3,7 @@ import requests
 import re
 
 API = "https://inventory-api-production-6d9d.up.railway.app"
+DB_URL = "postgresql://postgres:qQwJArobpvmbdNnvPhedFUUaHeRKomHm@ballast.proxy.rlwy.net:13076/railway"
 EXCEL_FILE = "Stock.xlsx"
 USERNAME = "admin"
 PASSWORD = "1244" 
