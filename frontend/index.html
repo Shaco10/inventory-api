@@ -380,7 +380,12 @@
       </div>
       <div class="card">
         <div class="form-grid">
-          <div class="form-group"><label>SKU del producto</label><input type="text" id="sale-sku" placeholder="Ej: MED-001"></div>
+          <div class="form-group">
+  <label>Producto</label>
+  <input type="text" id="sale-search" placeholder="Escribí el nombre del producto..." oninput="filterSaleProducts()" autocomplete="off">
+  <div id="sale-suggestions" style="background:var(--surface);border:1px solid var(--border);border-radius:7px;margin-top:4px;display:none;max-height:200px;overflow-y:auto;"></div>
+  <input type="hidden" id="sale-sku">
+</div>
           <div class="form-group"><label>Cantidad vendida</label><input type="number" id="sale-qty" placeholder="1" min="1"></div>
         </div>
         <div class="form-footer">
@@ -476,6 +481,7 @@
     btn.classList.add('active');
     if (name === 'stock') loadProducts();
     if (name === 'historial') loadSales();
+    if (name === 'venta') loadProducts();
   }
 
   // --- TOAST ---
@@ -606,12 +612,39 @@
       if (res.ok) {
         toast('Venta registrada — stock actualizado');
         document.getElementById('sale-sku').value = '';
+        document.getElementById('sale-search').value = '';
         document.getElementById('sale-qty').value = '';
       } else {
         const err = await res.json();
         toast(err.detail || 'Error al registrar', 'error');
       }
     } catch { toast('No se pudo conectar con la API', 'error'); }
+  }
+
+  function filterSaleProducts() {
+    const q = document.getElementById('sale-search').value.toLowerCase();
+    const box = document.getElementById('sale-suggestions');
+    document.getElementById('sale-sku').value = '';
+    if (!q) { box.style.display = 'none'; return; }
+    const matches = allProducts.filter(p =>
+      p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q)
+    ).slice(0, 8);
+    if (!matches.length) { box.style.display = 'none'; return; }
+    box.style.display = 'block';
+    box.innerHTML = matches.map(p => `
+      <div onclick="selectSaleProduct('${p.sku}', '${p.name}')"
+        style="padding:10px 12px;cursor:pointer;font-size:13px;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;align-items:center"
+        onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background=''">
+        <span>${p.name}</span>
+        <span class="sku-tag">${p.sku}</span>
+      </div>
+    `).join('');
+  }
+
+  function selectSaleProduct(sku, name) {
+    document.getElementById('sale-sku').value = sku;
+    document.getElementById('sale-search').value = name;
+    document.getElementById('sale-suggestions').style.display = 'none';
   }
 
   async function loadSales() {
