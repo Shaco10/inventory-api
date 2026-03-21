@@ -15,3 +15,7 @@ def create_sale(sale: schemas.SaleCreate, db: Session = Depends(get_db)):
 def get_sales(db: Session = Depends(get_db)):
     return crud.get_sales(db)
 
+
+@router.delete("/all")
+def delete_all_sales(db: Session = Depends(get_db)):
+    return crud.delete_all_sales(db)

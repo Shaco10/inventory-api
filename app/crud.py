@@ -127,3 +127,16 @@ def get_sales_total(db: Session):
         if product and product.precio_venta:
             total += product.precio_venta * sale.quantity
     return total
+
+
+def delete_all_sales(db: Session):
+    db.query(models.Sale).delete()
+    db.commit()
+    return {"message": "Historial de ventas eliminado"}
+
+
+def delete_all_purchases(db: Session):
+    db.query(models.PurchaseItem).delete()
+    db.query(models.Purchase).delete()
+    db.commit()
+    return {"message": "Historial de compras eliminado"}

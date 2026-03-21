@@ -408,7 +408,8 @@
             <tbody id="sales-tbody"><tr><td colspan="3" class="empty-state">Cargando...</td></tr></tbody>
           </table>
         </div>
-        <div style="margin-top:1rem;text-align:right">
+        <div style="margin-top:1rem;display:flex;justify-content:space-between;align-items:center">
+          <button class="btn btn-secondary" style="color:var(--danger);border-color:var(--danger)" onclick="deleteAllSales()">🗑 Borrar historial</button>
           <button class="btn btn-secondary" onclick="loadSales()">↺ Actualizar</button>
         </div>
       </div>
@@ -442,7 +443,10 @@
       <div class="card">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
           <div style="font-size:14px;font-weight:500">Historial de compras</div>
-          <button class="btn btn-secondary" onclick="loadContabilidad()">↺ Actualizar</button>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-secondary" style="color:var(--danger);border-color:var(--danger)" onclick="deleteAllPurchases()">🗑 Borrar historial</button>
+            <button class="btn btn-secondary" onclick="loadContabilidad()">↺ Actualizar</button>
+          </div>
         </div>
         <div class="table-wrap">
           <table>
@@ -456,6 +460,39 @@
   </main>
 </div>
 
+
+<!-- MODAL EDITAR PRODUCTO -->
+<div id="edit-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:center;justify-content:center;">
+  <div style="background:var(--surface);border-radius:12px;padding:2rem;width:100%;max-width:480px;margin:1rem;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+      <h3 style="font-size:16px;font-weight:500">Editar producto</h3>
+      <button onclick="closeEditModal()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted)">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <input type="hidden" id="edit-id">
+      <div class="form-group">
+        <label>Nombre</label>
+        <input type="text" id="edit-name">
+      </div>
+      <div class="form-group">
+        <label>SKU</label>
+        <input type="text" id="edit-sku">
+      </div>
+      <div class="form-group">
+        <label>Stock</label>
+        <input type="number" id="edit-stock" min="0">
+      </div>
+      <div class="form-group">
+        <label>Precio de venta ($)</label>
+        <input type="number" id="edit-precio" min="0" step="0.01">
+      </div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:1.5rem">
+      <button class="btn btn-secondary" onclick="closeEditModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveEdit()">Guardar cambios</button>
+    </div>
+  </div>
+</div>
 <div id="toast"></div>
 
 <script>
@@ -572,7 +609,10 @@
         <td><span class="sku-tag">${p.sku}</span></td>
         <td>${badge}</td>
         <td>${precio}</td>
-        <td><button class="btn btn-secondary" style="padding:4px 10px;font-size:12px;color:var(--danger);border-color:var(--danger)" onclick="deleteProduct(${p.id}, '${p.name}')">Eliminar</button></td>
+        <td style="display:flex;gap:6px;">
+          <button class="btn btn-secondary" style="padding:4px 10px;font-size:12px;" onclick="openEditModal(${p.id}, '${p.name}', '${p.sku}', ${p.stock}, ${p.precio_venta ?? 'null'})">✏️ Editar</button>
+          <button class="btn btn-secondary" style="padding:4px 10px;font-size:12px;color:var(--danger);border-color:var(--danger)" onclick="deleteProduct(${p.id}, '${p.name}')">Eliminar</button>
+        </td>
       </tr>`;
     }).join('');
   }
@@ -826,6 +866,63 @@
         const err = await res.json();
         toast(err.detail || 'Error al registrar la compra', 'error');
       }
+    } catch { toast('No se pudo conectar con la API', 'error'); }
+  }
+
+
+  // ── MODAL EDITAR ──
+  function openEditModal(id, name, sku, stock, precio) {
+    document.getElementById('edit-id').value = id;
+    document.getElementById('edit-name').value = name;
+    document.getElementById('edit-sku').value = sku;
+    document.getElementById('edit-stock').value = stock;
+    document.getElementById('edit-precio').value = precio !== null && precio !== 'null' ? precio : '';
+    document.getElementById('edit-modal').style.display = 'flex';
+  }
+
+  function closeEditModal() {
+    document.getElementById('edit-modal').style.display = 'none';
+  }
+
+  async function saveEdit() {
+    const id = document.getElementById('edit-id').value;
+    const name = document.getElementById('edit-name').value.trim();
+    const sku = document.getElementById('edit-sku').value.trim();
+    const stock = parseInt(document.getElementById('edit-stock').value);
+    const precio_venta = parseFloat(document.getElementById('edit-precio').value) || null;
+    if (!name || !sku || isNaN(stock)) { toast('Completá todos los campos', 'error'); return; }
+    try {
+      const res = await fetch(API + '/products/' + id, {
+        method: 'PUT', headers: authHeaders(),
+        body: JSON.stringify({ name, sku, stock, precio_venta })
+      });
+      if (res.ok) {
+        toast('Producto actualizado correctamente');
+        closeEditModal();
+        loadProducts();
+      } else {
+        const err = await res.json();
+        toast(err.detail || 'Error al guardar', 'error');
+      }
+    } catch { toast('No se pudo conectar con la API', 'error'); }
+  }
+
+  // ── BORRAR HISTORIAL ──
+  async function deleteAllSales() {
+    if (!confirm('¿Borrar todo el historial de ventas? Esta acción no se puede deshacer.')) return;
+    try {
+      const res = await fetch(API + '/sales/all', { method: 'DELETE', headers: authHeaders() });
+      if (res.ok) { toast('Historial de ventas eliminado'); loadSales(); }
+      else { toast('Error al eliminar', 'error'); }
+    } catch { toast('No se pudo conectar con la API', 'error'); }
+  }
+
+  async function deleteAllPurchases() {
+    if (!confirm('¿Borrar todo el historial de compras? Esta acción no se puede deshacer.')) return;
+    try {
+      const res = await fetch(API + '/purchases/all', { method: 'DELETE', headers: authHeaders() });
+      if (res.ok) { toast('Historial de compras eliminado'); loadContabilidad(); }
+      else { toast('Error al eliminar', 'error'); }
     } catch { toast('No se pudo conectar con la API', 'error'); }
   }
 

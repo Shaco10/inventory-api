@@ -25,3 +25,8 @@ def get_summary(db: Session = Depends(get_db)):
         "total_ventas": round(total_ventas, 2),
         "ganancia_neta": round(total_ventas - total_compras, 2)
     }
+
+
+@router.delete("/all")
+def delete_all_purchases(db: Session = Depends(get_db)):
+    return crud.delete_all_purchases(db)
