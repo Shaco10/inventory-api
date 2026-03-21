@@ -1,5 +1,6 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
 from .database import Base
 
 
@@ -10,8 +11,10 @@ class Product(Base):
     name = Column(String, nullable=False, index=True)
     sku = Column(String, nullable=False, unique=True, index=True)
     stock = Column(Integer, nullable=False, default=0)
+    precio_venta = Column(Float, nullable=True, default=None)
 
     sales = relationship("Sale", back_populates="product")
+    purchase_items = relationship("PurchaseItem", back_populates="product")
 
 
 class Sale(Base):
@@ -22,3 +25,25 @@ class Sale(Base):
     quantity = Column(Integer, nullable=False)
 
     product = relationship("Product", back_populates="sales")
+
+
+class Purchase(Base):
+    __tablename__ = "purchases"
+
+    id = Column(Integer, primary_key=True, index=True)
+    precio_total = Column(Float, nullable=False)
+    fecha = Column(DateTime(timezone=True), server_default=func.now())
+
+    items = relationship("PurchaseItem", back_populates="purchase")
+
+
+class PurchaseItem(Base):
+    __tablename__ = "purchase_items"
+
+    id = Column(Integer, primary_key=True, index=True)
+    purchase_id = Column(Integer, ForeignKey("purchases.id"), nullable=False)
+    product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
+    quantity = Column(Integer, nullable=False)
+
+    purchase = relationship("Purchase", back_populates="items")
+    product = relationship("Product", back_populates="purchase_items")

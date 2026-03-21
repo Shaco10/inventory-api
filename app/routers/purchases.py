@@ -1,0 +1,27 @@
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+from .. import crud, schemas
+from ..database import get_db
+
+router = APIRouter(prefix="/purchases", tags=["Purchases"])
+
+
+@router.post("/", response_model=schemas.PurchaseResponse)
+def create_purchase(purchase: schemas.PurchaseCreate, db: Session = Depends(get_db)):
+    return crud.create_purchase(db, purchase)
+
+
+@router.get("/", response_model=list[schemas.PurchaseResponse])
+def get_purchases(db: Session = Depends(get_db)):
+    return crud.get_purchases(db)
+
+
+@router.get("/summary")
+def get_summary(db: Session = Depends(get_db)):
+    total_compras = crud.get_purchase_total(db)
+    total_ventas = crud.get_sales_total(db)
+    return {
+        "total_compras": round(total_compras, 2),
+        "total_ventas": round(total_ventas, 2),
+        "ganancia_neta": round(total_ventas - total_compras, 2)
+    }

@@ -1,4 +1,6 @@
 from pydantic import BaseModel, Field, ConfigDict
+from typing import Optional, List
+from datetime import datetime
 
 
 # =========================
@@ -9,12 +11,14 @@ class ProductCreate(BaseModel):
     name: str
     sku: str
     stock: int = Field(ge=0)
+    precio_venta: Optional[float] = Field(default=None, ge=0)
 
 
 class ProductUpdate(BaseModel):
     name: str
     sku: str
     stock: int = Field(ge=0)
+    precio_venta: Optional[float] = Field(default=None, ge=0)
 
 
 class ProductResponse(BaseModel):
@@ -23,6 +27,7 @@ class ProductResponse(BaseModel):
     name: str
     sku: str
     stock: int
+    precio_venta: Optional[float] = None
 
 
 # =========================
@@ -39,3 +44,32 @@ class SaleResponse(BaseModel):
     id: int
     product_id: int
     quantity: int
+
+
+# =========================
+# PURCHASE
+# =========================
+
+class PurchaseItemCreate(BaseModel):
+    product_id: int
+    quantity: int = Field(gt=0)
+
+
+class PurchaseCreate(BaseModel):
+    precio_total: float = Field(gt=0)
+    items: List[PurchaseItemCreate]
+
+
+class PurchaseItemResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    product_id: int
+    quantity: int
+
+
+class PurchaseResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    precio_total: float
+    fecha: datetime
+    items: List[PurchaseItemResponse]

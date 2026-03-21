@@ -62,18 +62,14 @@
   .login-subtitle { font-size: 13px; color: var(--muted); margin-bottom: 2rem; }
 
   .login-card .form-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
-
   .login-card label { font-size: 12px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; }
-
   .login-card input {
     font-family: var(--sans); font-size: 14px; color: var(--text); background: var(--bg);
     border: 1px solid var(--border); border-radius: 7px; padding: 9px 12px; outline: none;
     transition: border-color .15s, box-shadow .15s; width: 100%;
   }
   .login-card input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(45,90,61,.1); background: var(--surface); }
-
   .login-error { font-size: 12px; color: var(--danger); margin-bottom: 10px; min-height: 16px; }
-
   .btn-login {
     width: 100%; font-family: var(--sans); font-size: 14px; font-weight: 500;
     padding: 10px; border-radius: 7px; border: none; background: var(--accent);
@@ -106,6 +102,7 @@
   nav {
     display: flex; gap: 2px; padding: 0 2rem;
     background: var(--surface); border-bottom: 1px solid var(--border);
+    overflow-x: auto;
   }
 
   .nav-btn {
@@ -133,6 +130,7 @@
   .stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
   .stat-value { font-family: var(--mono); font-size: 26px; font-weight: 500; color: var(--text); }
   .stat-value.red { color: var(--danger); }
+  .stat-value.green { color: var(--accent); }
 
   .table-wrap { overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -150,12 +148,17 @@
 
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .form-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+  .form-grid.four { grid-template-columns: 1fr 1fr 1fr 1fr; }
   .form-group { display: flex; flex-direction: column; gap: 5px; }
 
   label { font-size: 12px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; }
 
-  input { font-family: var(--sans); font-size: 14px; color: var(--text); background: var(--bg); border: 1px solid var(--border); border-radius: 7px; padding: 9px 12px; outline: none; transition: border-color .15s, box-shadow .15s; }
-  input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(45,90,61,.1); background: var(--surface); }
+  input, select {
+    font-family: var(--sans); font-size: 14px; color: var(--text); background: var(--bg);
+    border: 1px solid var(--border); border-radius: 7px; padding: 9px 12px; outline: none;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(45,90,61,.1); background: var(--surface); }
 
   .btn { font-family: var(--sans); font-size: 13px; font-weight: 500; padding: 9px 18px; border-radius: 7px; border: none; cursor: pointer; transition: background .15s, transform .1s; }
   .btn:active { transform: scale(.98); }
@@ -163,6 +166,8 @@
   .btn-primary:hover { background: var(--accent-hover); }
   .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
   .btn-secondary:hover { background: var(--bg); }
+  .btn-danger { background: var(--danger-light); color: var(--danger); border: 1px solid var(--danger); }
+  .btn-danger:hover { background: var(--danger); color: white; }
 
   .form-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
 
@@ -176,9 +181,35 @@
   .search-bar input { flex: 1; }
   .divider { height: 1px; background: var(--border); margin: 1.5rem 0; }
 
+  /* Compras - lista de items */
+  .purchase-items-list { display: flex; flex-direction: column; gap: 8px; margin: 1rem 0; }
+  .purchase-item-row {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 10px 12px;
+  }
+  .purchase-item-row .item-name { flex: 1; font-size: 13px; font-weight: 500; }
+  .purchase-item-row .item-qty { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+  .purchase-item-row .btn-remove { padding: 4px 8px; font-size: 12px; }
+
+  /* Contabilidad */
+  .accounting-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 1.5rem; }
+  .accounting-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 1.25rem;
+  }
+  .accounting-card.ganancia { border-color: var(--accent); background: var(--accent-light); }
+  .accounting-card.perdida { border-color: var(--danger); background: var(--danger-light); }
+  .ac-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; }
+  .ac-value { font-family: var(--mono); font-size: 28px; font-weight: 500; }
+  .ac-value.green { color: var(--accent); }
+  .ac-value.red { color: var(--danger); }
+  .ac-value.neutral { color: var(--text); }
+
   @media (max-width: 600px) {
     .stats { grid-template-columns: 1fr 1fr; }
-    .form-grid, .form-grid.three { grid-template-columns: 1fr; }
+    .form-grid, .form-grid.three, .form-grid.four { grid-template-columns: 1fr; }
+    .accounting-grid { grid-template-columns: 1fr; }
     main { padding: 1rem; }
     header { padding: 0 1rem; }
     nav { padding: 0 1rem; }
@@ -222,7 +253,9 @@
     <button class="nav-btn active" onclick="showSection('stock', this)">Stock</button>
     <button class="nav-btn" onclick="showSection('agregar', this)">Agregar producto</button>
     <button class="nav-btn" onclick="showSection('venta', this)">Registrar venta</button>
-    <button class="nav-btn" onclick="showSection('historial', this)">Historial</button>
+    <button class="nav-btn" onclick="showSection('compras', this)">Registrar compra</button>
+    <button class="nav-btn" onclick="showSection('historial', this)">Historial ventas</button>
+    <button class="nav-btn" onclick="showSection('contabilidad', this)">Contabilidad</button>
   </nav>
 
   <main>
@@ -245,8 +278,8 @@
         </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Nombre</th><th>SKU</th><th>Stock</th><th></th></tr></thead>
-            <tbody id="products-tbody"><tr><td colspan="4" class="empty-state">Cargando...</td></tr></tbody>
+            <thead><tr><th>Nombre</th><th>SKU</th><th>Stock</th><th>Precio venta</th><th></th></tr></thead>
+            <tbody id="products-tbody"><tr><td colspan="5" class="empty-state">Cargando...</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -259,13 +292,14 @@
         <p>Cargá un producto nuevo al inventario</p>
       </div>
       <div class="card">
-        <div class="form-grid three">
-          <div class="form-group"><label>Nombre del producto</label><input type="text" id="add-name" placeholder="Ej: Medialunas"></div>
-          <div class="form-group"><label>SKU / Código</label><input type="text" id="add-sku" placeholder="Ej: MED-001"></div>
+        <div class="form-grid four">
+          <div class="form-group"><label>Nombre del producto</label><input type="text" id="add-name" placeholder="Ej: Palito de esófago"></div>
+          <div class="form-group"><label>SKU / Código</label><input type="text" id="add-sku" placeholder="Ej: PAL-001"></div>
           <div class="form-group"><label>Stock inicial</label><input type="number" id="add-stock" placeholder="0" min="0"></div>
+          <div class="form-group"><label>Precio de venta ($)</label><input type="number" id="add-precio" placeholder="0.00" min="0" step="0.01"></div>
         </div>
         <div class="form-footer">
-          <span style="font-size:12px;color:var(--muted)">El SKU debe ser único por producto</span>
+          <span style="font-size:12px;color:var(--muted)">Podés dejar precio en 0 y cargarlo después</span>
           <button class="btn btn-primary" onclick="addProduct()">Agregar producto</button>
         </div>
       </div>
@@ -282,6 +316,7 @@
             <div id="upd-suggestions" style="background:var(--surface);border:1px solid var(--border);border-radius:7px;margin-top:4px;display:none;max-height:200px;overflow-y:auto;"></div>
             <input type="hidden" id="upd-selected-id">
             <input type="hidden" id="upd-selected-sku">
+            <input type="hidden" id="upd-selected-precio">
           </div>
           <div class="form-group">
             <label>Unidades a sumar</label>
@@ -318,7 +353,49 @@
       </div>
     </div>
 
-    <!-- HISTORIAL -->
+    <!-- COMPRAS -->
+    <div class="section" id="sec-compras">
+      <div class="section-header">
+        <h2>Registrar compra</h2>
+        <p>Agregá los productos que compraste — el stock se suma automáticamente</p>
+      </div>
+      <div class="card">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Producto</label>
+            <input type="text" id="buy-search" placeholder="Escribí el nombre o SKU..." oninput="filterBuyProducts()" autocomplete="off">
+            <div id="buy-suggestions" style="background:var(--surface);border:1px solid var(--border);border-radius:7px;margin-top:4px;display:none;max-height:200px;overflow-y:auto;"></div>
+            <input type="hidden" id="buy-product-id">
+            <input type="hidden" id="buy-product-name">
+          </div>
+          <div class="form-group">
+            <label>Cantidad comprada</label>
+            <input type="number" id="buy-qty" placeholder="0" min="1">
+          </div>
+        </div>
+        <div style="margin-top:10px;text-align:right">
+          <button class="btn btn-secondary" onclick="addBuyItem()">+ Agregar a la lista</button>
+        </div>
+
+        <!-- Lista de items de la compra -->
+        <div id="buy-items-list" class="purchase-items-list" style="display:none"></div>
+
+        <div class="divider"></div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Precio total que pagaste ($)</label>
+            <input type="number" id="buy-total" placeholder="0.00" min="0" step="0.01">
+          </div>
+        </div>
+        <div class="form-footer">
+          <span style="font-size:12px;color:var(--muted)" id="buy-items-count">Ningún producto agregado todavía</span>
+          <button class="btn btn-primary" onclick="registerPurchase()">Registrar compra</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- HISTORIAL VENTAS -->
     <div class="section" id="sec-historial">
       <div class="section-header">
         <h2>Historial de ventas</h2>
@@ -337,6 +414,45 @@
       </div>
     </div>
 
+    <!-- CONTABILIDAD -->
+    <div class="section" id="sec-contabilidad">
+      <div class="section-header">
+        <h2>Contabilidad</h2>
+        <p>Resumen de ingresos, gastos y ganancia neta</p>
+      </div>
+
+      <div class="accounting-grid">
+        <div class="accounting-card">
+          <div class="ac-label">💰 Total vendido</div>
+          <div class="ac-value green" id="ac-ventas">—</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:6px">Basado en precio de venta × cantidad</div>
+        </div>
+        <div class="accounting-card">
+          <div class="ac-label">🛒 Total gastado en compras</div>
+          <div class="ac-value red" id="ac-compras">—</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:6px">Suma de todas las compras registradas</div>
+        </div>
+        <div class="accounting-card" id="ac-ganancia-card">
+          <div class="ac-label">📊 Ganancia neta</div>
+          <div class="ac-value neutral" id="ac-ganancia">—</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:6px">Ventas − Compras</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+          <div style="font-size:14px;font-weight:500">Historial de compras</div>
+          <button class="btn btn-secondary" onclick="loadContabilidad()">↺ Actualizar</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>#</th><th>Fecha</th><th>Productos</th><th>Total pagado</th></tr></thead>
+            <tbody id="purchases-tbody"><tr><td colspan="4" class="empty-state">Cargando...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
   </main>
 </div>
 
@@ -345,6 +461,7 @@
 <script>
   const API = 'https://inventory-api-production-6d9d.up.railway.app';
   let allProducts = [];
+  let buyItems = []; // items de la compra en curso
 
   function getToken() { return localStorage.getItem('token'); }
   function authHeaders() { return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getToken() }; }
@@ -395,13 +512,15 @@
     if (name === 'historial') { loadProducts(); loadSales(); }
     if (name === 'venta') loadProducts();
     if (name === 'agregar') loadProducts();
+    if (name === 'compras') loadProducts();
+    if (name === 'contabilidad') loadContabilidad();
   }
 
   function toast(msg, type = 'success') {
     const t = document.getElementById('toast');
     t.textContent = msg;
     t.className = 'show ' + type;
-    setTimeout(() => t.className = '', 3000);
+    setTimeout(() => t.className = '', 3500);
   }
 
   async function checkStatus() {
@@ -425,7 +544,7 @@
       updateStats(allProducts);
     } catch {
       document.getElementById('products-tbody').innerHTML =
-        '<tr><td colspan="4" class="empty-state">No se pudo conectar con la API</td></tr>';
+        '<tr><td colspan="5" class="empty-state">No se pudo conectar con la API</td></tr>';
     }
   }
 
@@ -438,7 +557,7 @@
   function renderProducts(products) {
     const tbody = document.getElementById('products-tbody');
     if (!products.length) {
-      tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No hay productos cargados todavía</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No hay productos cargados todavía</td></tr>';
       return;
     }
     tbody.innerHTML = products.map(p => {
@@ -447,10 +566,12 @@
         : p.stock < 10
           ? `<span class="stock-badge stock-low">${p.stock}</span>`
           : `<span class="stock-badge stock-ok">${p.stock}</span>`;
+      const precio = p.precio_venta != null ? `$${p.precio_venta.toFixed(2)}` : `<span style="color:var(--muted)">—</span>`;
       return `<tr>
         <td>${p.name} <span style="font-size:11px;color:var(--muted)">#${p.id}</span></td>
         <td><span class="sku-tag">${p.sku}</span></td>
         <td>${badge}</td>
+        <td>${precio}</td>
         <td><button class="btn btn-secondary" style="padding:4px 10px;font-size:12px;color:var(--danger);border-color:var(--danger)" onclick="deleteProduct(${p.id}, '${p.name}')">Eliminar</button></td>
       </tr>`;
     }).join('');
@@ -466,18 +587,21 @@
   async function addProduct() {
     const name = document.getElementById('add-name').value.trim();
     const sku = document.getElementById('add-sku').value.trim();
-    const stock = parseInt(document.getElementById('add-stock').value);
-    if (!name || !sku || isNaN(stock)) { toast('Completá todos los campos', 'error'); return; }
+    const stock = parseInt(document.getElementById('add-stock').value) || 0;
+    const precio_venta = parseFloat(document.getElementById('add-precio').value) || null;
+    if (!name || !sku) { toast('Completá nombre y SKU', 'error'); return; }
     try {
       const res = await fetch(API + '/products/', {
         method: 'POST', headers: authHeaders(),
-        body: JSON.stringify({ name, sku, stock })
+        body: JSON.stringify({ name, sku, stock, precio_venta })
       });
       if (res.ok) {
         toast('Producto agregado correctamente');
         document.getElementById('add-name').value = '';
         document.getElementById('add-sku').value = '';
         document.getElementById('add-stock').value = '';
+        document.getElementById('add-precio').value = '';
+        loadProducts();
       } else {
         const err = await res.json();
         toast(err.detail || 'Error al agregar', 'error');
@@ -494,6 +618,7 @@
     } catch { toast('No se pudo conectar con la API', 'error'); }
   }
 
+  // ── SUMAR STOCK ──
   function filterUpdateProducts() {
     const q = document.getElementById('upd-search').value.toLowerCase();
     const box = document.getElementById('upd-suggestions');
@@ -506,7 +631,7 @@
     if (!matches.length) { box.style.display = 'none'; return; }
     box.style.display = 'block';
     box.innerHTML = matches.map(p => `
-      <div onclick="selectUpdateProduct(${p.id}, '${p.name}', '${p.sku}', ${p.stock})"
+      <div onclick="selectUpdateProduct(${p.id}, '${p.name}', '${p.sku}', ${p.stock}, ${p.precio_venta || 'null'})"
         style="padding:10px 12px;cursor:pointer;font-size:13px;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;align-items:center"
         onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background=''">
         <span>${p.name}</span>
@@ -515,9 +640,10 @@
     `).join('');
   }
 
-  function selectUpdateProduct(id, name, sku, stock) {
+  function selectUpdateProduct(id, name, sku, stock, precio) {
     document.getElementById('upd-selected-id').value = id;
     document.getElementById('upd-selected-sku').value = sku;
+    document.getElementById('upd-selected-precio').value = precio || '';
     document.getElementById('upd-search').value = name;
     document.getElementById('upd-suggestions').style.display = 'none';
     document.getElementById('upd-current-stock').textContent = `Stock actual: ${stock} unidades`;
@@ -526,6 +652,7 @@
   async function addStock() {
     const id = document.getElementById('upd-selected-id').value;
     const sku = document.getElementById('upd-selected-sku').value;
+    const precio_venta = parseFloat(document.getElementById('upd-selected-precio').value) || null;
     const add = parseInt(document.getElementById('upd-add-stock').value);
     const name = document.getElementById('upd-search').value.trim();
     if (!id || isNaN(add) || add < 1) { toast('Seleccioná un producto y una cantidad', 'error'); return; }
@@ -535,7 +662,7 @@
     try {
       const res = await fetch(API + '/products/' + id, {
         method: 'PUT', headers: authHeaders(),
-        body: JSON.stringify({ name, sku, stock: newStock })
+        body: JSON.stringify({ name, sku, stock: newStock, precio_venta })
       });
       if (res.ok) {
         toast(`Stock actualizado — ahora hay ${newStock} unidades`);
@@ -551,6 +678,7 @@
     } catch { toast('No se pudo conectar con la API', 'error'); }
   }
 
+  // ── VENTAS ──
   function filterSaleProducts() {
     const q = document.getElementById('sale-search').value.toLowerCase();
     const box = document.getElementById('sale-suggestions');
@@ -598,6 +726,110 @@
     } catch { toast('No se pudo conectar con la API', 'error'); }
   }
 
+  // ── COMPRAS ──
+  function filterBuyProducts() {
+    const q = document.getElementById('buy-search').value.toLowerCase();
+    const box = document.getElementById('buy-suggestions');
+    document.getElementById('buy-product-id').value = '';
+    if (!q) { box.style.display = 'none'; return; }
+    const matches = allProducts.filter(p =>
+      p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q)
+    ).slice(0, 8);
+    if (!matches.length) { box.style.display = 'none'; return; }
+    box.style.display = 'block';
+    box.innerHTML = matches.map(p => `
+      <div onclick="selectBuyProduct(${p.id}, '${p.name}')"
+        style="padding:10px 12px;cursor:pointer;font-size:13px;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;align-items:center"
+        onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background=''">
+        <span>${p.name}</span>
+        <span class="sku-tag">${p.sku}</span>
+      </div>
+    `).join('');
+  }
+
+  function selectBuyProduct(id, name) {
+    document.getElementById('buy-product-id').value = id;
+    document.getElementById('buy-product-name').value = name;
+    document.getElementById('buy-search').value = name;
+    document.getElementById('buy-suggestions').style.display = 'none';
+  }
+
+  function addBuyItem() {
+    const product_id = parseInt(document.getElementById('buy-product-id').value);
+    const name = document.getElementById('buy-product-name').value;
+    const quantity = parseInt(document.getElementById('buy-qty').value);
+
+    if (!product_id) { toast('Seleccioná un producto de la lista', 'error'); return; }
+    if (isNaN(quantity) || quantity < 1) { toast('Ingresá una cantidad válida', 'error'); return; }
+
+    // Si ya está en la lista, sumar cantidad
+    const existing = buyItems.find(i => i.product_id === product_id);
+    if (existing) {
+      existing.quantity += quantity;
+    } else {
+      buyItems.push({ product_id, name, quantity });
+    }
+
+    renderBuyItems();
+    document.getElementById('buy-search').value = '';
+    document.getElementById('buy-product-id').value = '';
+    document.getElementById('buy-product-name').value = '';
+    document.getElementById('buy-qty').value = '';
+  }
+
+  function renderBuyItems() {
+    const list = document.getElementById('buy-items-list');
+    const counter = document.getElementById('buy-items-count');
+    if (!buyItems.length) {
+      list.style.display = 'none';
+      counter.textContent = 'Ningún producto agregado todavía';
+      return;
+    }
+    list.style.display = 'flex';
+    counter.textContent = `${buyItems.length} producto(s) en esta compra`;
+    list.innerHTML = buyItems.map((item, idx) => `
+      <div class="purchase-item-row">
+        <span class="item-name">${item.name}</span>
+        <span class="item-qty">${item.quantity} unidades</span>
+        <button class="btn btn-danger btn-remove" onclick="removeBuyItem(${idx})">✕</button>
+      </div>
+    `).join('');
+  }
+
+  function removeBuyItem(idx) {
+    buyItems.splice(idx, 1);
+    renderBuyItems();
+  }
+
+  async function registerPurchase() {
+    if (!buyItems.length) { toast('Agregá al menos un producto a la compra', 'error'); return; }
+    const precio_total = parseFloat(document.getElementById('buy-total').value);
+    if (isNaN(precio_total) || precio_total <= 0) { toast('Ingresá el precio total que pagaste', 'error'); return; }
+
+    const body = {
+      precio_total,
+      items: buyItems.map(i => ({ product_id: i.product_id, quantity: i.quantity }))
+    };
+
+    try {
+      const res = await fetch(API + '/purchases/', {
+        method: 'POST', headers: authHeaders(),
+        body: JSON.stringify(body)
+      });
+      if (res.ok) {
+        toast('Compra registrada — stock actualizado');
+        buyItems = [];
+        renderBuyItems();
+        document.getElementById('buy-total').value = '';
+        loadProducts();
+      } else {
+        const err = await res.json();
+        toast(err.detail || 'Error al registrar la compra', 'error');
+      }
+    } catch { toast('No se pudo conectar con la API', 'error'); }
+  }
+
+  // ── HISTORIAL VENTAS ──
   async function loadSales() {
     try {
       const [salesRes, productsRes] = await Promise.all([
@@ -607,7 +839,7 @@
       const sales = await salesRes.json();
       const products = await productsRes.json();
       const productMap = {};
-      products.forEach(p => productMap[p.id] = p.sku);
+      products.forEach(p => productMap[p.id] = p.name);
       const tbody = document.getElementById('sales-tbody');
       if (!sales.length) {
         tbody.innerHTML = '<tr><td colspan="3" class="empty-state">No hay ventas registradas todavía</td></tr>';
@@ -621,6 +853,52 @@
     } catch {
       document.getElementById('sales-tbody').innerHTML =
         '<tr><td colspan="3" class="empty-state">No se pudo conectar con la API</td></tr>';
+    }
+  }
+
+  // ── CONTABILIDAD ──
+  async function loadContabilidad() {
+    try {
+      const [summaryRes, purchasesRes, productsRes] = await Promise.all([
+        fetch(API + '/purchases/summary', { headers: authHeaders() }),
+        fetch(API + '/purchases/', { headers: authHeaders() }),
+        fetch(API + '/products/', { headers: authHeaders() })
+      ]);
+      const summary = await summaryRes.json();
+      const purchases = await purchasesRes.json();
+      const products = await productsRes.json();
+      const productMap = {};
+      products.forEach(p => productMap[p.id] = p.name);
+
+      document.getElementById('ac-ventas').textContent = `$${summary.total_ventas.toFixed(2)}`;
+      document.getElementById('ac-compras').textContent = `$${summary.total_compras.toFixed(2)}`;
+      const ganancia = summary.ganancia_neta;
+      const gEl = document.getElementById('ac-ganancia');
+      const gCard = document.getElementById('ac-ganancia-card');
+      gEl.textContent = `$${ganancia.toFixed(2)}`;
+      gEl.className = 'ac-value ' + (ganancia > 0 ? 'green' : ganancia < 0 ? 'red' : 'neutral');
+      gCard.className = 'accounting-card ' + (ganancia > 0 ? 'ganancia' : ganancia < 0 ? 'perdida' : '');
+
+      // Tabla de compras
+      const tbody = document.getElementById('purchases-tbody');
+      if (!purchases.length) {
+        tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No hay compras registradas todavía</td></tr>';
+        return;
+      }
+      tbody.innerHTML = purchases.map(p => {
+        const fecha = new Date(p.fecha).toLocaleDateString('es-AR', { day:'2-digit', month:'2-digit', year:'numeric' });
+        const itemsText = p.items.map(i => `${productMap[i.product_id] || '#'+i.product_id} ×${i.quantity}`).join(', ');
+        return `<tr>
+          <td><span class="sku-tag">#${p.id}</span></td>
+          <td>${fecha}</td>
+          <td style="font-size:12px;color:var(--muted)">${itemsText}</td>
+          <td><strong>$${p.precio_total.toFixed(2)}</strong></td>
+        </tr>`;
+      }).join('');
+
+    } catch {
+      document.getElementById('purchases-tbody').innerHTML =
+        '<tr><td colspan="4" class="empty-state">No se pudo conectar con la API</td></tr>';
     }
   }
 </script>
