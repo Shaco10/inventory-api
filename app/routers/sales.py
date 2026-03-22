@@ -16,6 +16,6 @@ def get_sales(db: Session = Depends(get_db)):
     return crud.get_sales(db)
 
 
-@router.delete("/all")
-def delete_all_sales(db: Session = Depends(get_db)):
-    return crud.delete_all_sales(db)
+@router.delete("/{sale_id}")
+def delete_sale(sale_id: int, db: Session = Depends(get_db)):
+    return crud.delete_sale(db, sale_id)

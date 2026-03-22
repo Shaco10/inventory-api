@@ -27,6 +27,6 @@ def get_summary(db: Session = Depends(get_db)):
     }
 
 
-@router.delete("/all")
-def delete_all_purchases(db: Session = Depends(get_db)):
-    return crud.delete_all_purchases(db)
+@router.delete("/{purchase_id}")
+def delete_purchase(purchase_id: int, db: Session = Depends(get_db)):
+    return crud.delete_purchase(db, purchase_id)

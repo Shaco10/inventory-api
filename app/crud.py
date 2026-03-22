@@ -129,14 +129,27 @@ def get_sales_total(db: Session):
     return total
 
 
-def delete_all_sales(db: Session):
-    db.query(models.Sale).delete()
+def delete_sale(db: Session, sale_id: int):
+    sale = db.query(models.Sale).filter(models.Sale.id == sale_id).first()
+    if not sale:
+        raise HTTPException(status_code=404, detail="Venta no encontrada")
+    product = get_product_by_id(db, sale.product_id)
+    if product:
+        product.stock += sale.quantity
+    db.delete(sale)
     db.commit()
-    return {"message": "Historial de ventas eliminado"}
+    return {"message": "Venta eliminada y stock restaurado"}
 
 
-def delete_all_purchases(db: Session):
-    db.query(models.PurchaseItem).delete()
-    db.query(models.Purchase).delete()
+def delete_purchase(db: Session, purchase_id: int):
+    purchase = db.query(models.Purchase).filter(models.Purchase.id == purchase_id).first()
+    if not purchase:
+        raise HTTPException(status_code=404, detail="Compra no encontrada")
+    for item in purchase.items:
+        product = get_product_by_id(db, item.product_id)
+        if product:
+            product.stock = max(0, product.stock - item.quantity)
+    db.query(models.PurchaseItem).filter(models.PurchaseItem.purchase_id == purchase_id).delete()
+    db.delete(purchase)
     db.commit()
-    return {"message": "Historial de compras eliminado"}
+    return {"message": "Compra eliminada y stock actualizado"}
