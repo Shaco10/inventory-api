@@ -994,20 +994,20 @@
       // Tabla de compras
       const tbody = document.getElementById('purchases-tbody');
       if (!purchases.length) {
-        tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No hay compras registradas todavía</td></tr>';
-        return;
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No hay compras registradas todavía</td></tr>';
+      } else {
+        tbody.innerHTML = purchases.map(p => {
+          const fecha = new Date(p.fecha).toLocaleDateString('es-AR', { day:'2-digit', month:'2-digit', year:'numeric' });
+          const itemsText = p.items.map(i => `${productMap[i.product_id] || '#'+i.product_id} ×${i.quantity}`).join(', ');
+          return `<tr>
+            <td><span class="sku-tag">#${p.id}</span></td>
+            <td>${fecha}</td>
+            <td style="font-size:12px;color:var(--muted)">${itemsText}</td>
+            <td><strong>$${p.precio_total.toFixed(2)}</strong></td>
+            <td><button class="btn btn-secondary" style="padding:4px 8px;font-size:12px;color:var(--danger);border-color:var(--danger)" onclick="deletePurchase(${p.id})">✕</button></td>
+          </tr>`;
+        }).join('');
       }
-      tbody.innerHTML = purchases.map(p => {
-        const fecha = new Date(p.fecha).toLocaleDateString('es-AR', { day:'2-digit', month:'2-digit', year:'numeric' });
-        const itemsText = p.items.map(i => `${productMap[i.product_id] || '#'+i.product_id} ×${i.quantity}`).join(', ');
-        return `<tr>
-          <td><span class="sku-tag">#${p.id}</span></td>
-          <td>${fecha}</td>
-          <td style="font-size:12px;color:var(--muted)">${itemsText}</td>
-          <td><strong>$${p.precio_total.toFixed(2)}</strong></td>
-          <td><button class="btn btn-secondary" style="padding:4px 8px;font-size:12px;color:var(--danger);border-color:var(--danger)" onclick="deletePurchase(${p.id})">✕</button></td>
-        </tr>`;
-      }).join('');
 
       await loadSales();
     } catch {
