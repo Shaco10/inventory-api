@@ -5,6 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Inventario</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2d5a3d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="AyM">
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+  }
+</script>
 <style>
   :root {
     --bg: #f5f3ee;
@@ -32,7 +41,6 @@
     min-height: 100vh;
   }
 
-  /* LOGIN */
   #login-screen {
     min-height: 100vh;
     display: flex;
@@ -50,152 +58,57 @@
     max-width: 360px;
   }
 
-  .login-logo {
-    font-family: var(--mono);
-    font-size: 18px;
-    font-weight: 500;
-    color: var(--accent);
-    margin-bottom: 0.5rem;
-  }
+  .login-logo { font-family: var(--mono); font-size: 18px; font-weight: 500; color: var(--accent); margin-bottom: 0.5rem; }
+  .login-subtitle { font-size: 13px; color: var(--muted); margin-bottom: 2rem; }
 
-  .login-subtitle {
-    font-size: 13px;
-    color: var(--muted);
-    margin-bottom: 2rem;
-  }
-
-  .login-card .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    margin-bottom: 12px;
-  }
-
-  .login-card label {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: .4px;
-  }
-
+  .login-card .form-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
+  .login-card label { font-size: 12px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; }
   .login-card input {
-    font-family: var(--sans);
-    font-size: 14px;
-    color: var(--text);
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 7px;
-    padding: 9px 12px;
-    outline: none;
-    transition: border-color .15s, box-shadow .15s;
-    width: 100%;
+    font-family: var(--sans); font-size: 14px; color: var(--text); background: var(--bg);
+    border: 1px solid var(--border); border-radius: 7px; padding: 9px 12px; outline: none;
+    transition: border-color .15s, box-shadow .15s; width: 100%;
   }
-
-  .login-card input:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(45,90,61,.1);
-    background: var(--surface);
-  }
-
-  .login-error {
-    font-size: 12px;
-    color: var(--danger);
-    margin-bottom: 10px;
-    min-height: 16px;
-  }
-
+  .login-card input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(45,90,61,.1); background: var(--surface); }
+  .login-error { font-size: 12px; color: var(--danger); margin-bottom: 10px; min-height: 16px; }
   .btn-login {
-    width: 100%;
-    font-family: var(--sans);
-    font-size: 14px;
-    font-weight: 500;
-    padding: 10px;
-    border-radius: 7px;
-    border: none;
-    background: var(--accent);
-    color: white;
-    cursor: pointer;
-    transition: background .15s;
-    margin-top: 4px;
+    width: 100%; font-family: var(--sans); font-size: 14px; font-weight: 500;
+    padding: 10px; border-radius: 7px; border: none; background: var(--accent);
+    color: white; cursor: pointer; transition: background .15s; margin-top: 4px;
   }
   .btn-login:hover { background: var(--accent-hover); }
 
-  /* APP */
   #app-screen { display: none; }
 
   header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 0 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 56px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 0 2rem; display: flex; align-items: center;
+    justify-content: space-between; height: 56px; position: sticky; top: 0; z-index: 100;
   }
 
-  .logo {
-    font-family: var(--mono);
-    font-size: 15px;
-    font-weight: 500;
-    color: var(--accent);
-  }
-
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-
-  .api-status {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    color: var(--muted);
-    font-family: var(--mono);
-  }
-
+  .logo { font-family: var(--mono); font-size: 15px; font-weight: 500; color: var(--accent); }
+  .header-right { display: flex; align-items: center; gap: 16px; }
+  .api-status { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); font-family: var(--mono); }
   .status-dot { width: 7px; height: 7px; border-radius: 50%; background: #ccc; transition: background .3s; }
   .status-dot.ok { background: #4caf50; }
   .status-dot.err { background: var(--danger); }
 
   .btn-logout {
-    font-family: var(--sans);
-    font-size: 12px;
-    color: var(--muted);
-    background: none;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 5px 10px;
-    cursor: pointer;
-    transition: color .15s, border-color .15s;
+    font-family: var(--sans); font-size: 12px; color: var(--muted);
+    background: none; border: 1px solid var(--border); border-radius: 6px;
+    padding: 5px 10px; cursor: pointer; transition: color .15s, border-color .15s;
   }
   .btn-logout:hover { color: var(--danger); border-color: var(--danger); }
 
   nav {
-    display: flex;
-    gap: 2px;
-    padding: 0 2rem;
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
+    display: flex; gap: 2px; padding: 0 2rem;
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    overflow-x: auto;
   }
 
   .nav-btn {
-    font-family: var(--sans);
-    font-size: 13px;
-    font-weight: 400;
-    color: var(--muted);
-    background: none;
-    border: none;
-    border-bottom: 2px solid transparent;
-    padding: 10px 14px;
-    cursor: pointer;
-    transition: color .15s, border-color .15s;
-    white-space: nowrap;
+    font-family: var(--sans); font-size: 13px; font-weight: 400; color: var(--muted);
+    background: none; border: none; border-bottom: 2px solid transparent;
+    padding: 10px 14px; cursor: pointer; transition: color .15s, border-color .15s; white-space: nowrap;
   }
   .nav-btn:hover { color: var(--text); }
   .nav-btn.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 500; }
@@ -217,6 +130,7 @@
   .stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
   .stat-value { font-family: var(--mono); font-size: 26px; font-weight: 500; color: var(--text); }
   .stat-value.red { color: var(--danger); }
+  .stat-value.green { color: var(--accent); }
 
   .table-wrap { overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -234,12 +148,17 @@
 
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .form-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+  .form-grid.four { grid-template-columns: 1fr 1fr 1fr 1fr; }
   .form-group { display: flex; flex-direction: column; gap: 5px; }
 
   label { font-size: 12px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; }
 
-  input { font-family: var(--sans); font-size: 14px; color: var(--text); background: var(--bg); border: 1px solid var(--border); border-radius: 7px; padding: 9px 12px; outline: none; transition: border-color .15s, box-shadow .15s; }
-  input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(45,90,61,.1); background: var(--surface); }
+  input, select {
+    font-family: var(--sans); font-size: 14px; color: var(--text); background: var(--bg);
+    border: 1px solid var(--border); border-radius: 7px; padding: 9px 12px; outline: none;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(45,90,61,.1); background: var(--surface); }
 
   .btn { font-family: var(--sans); font-size: 13px; font-weight: 500; padding: 9px 18px; border-radius: 7px; border: none; cursor: pointer; transition: background .15s, transform .1s; }
   .btn:active { transform: scale(.98); }
@@ -247,6 +166,8 @@
   .btn-primary:hover { background: var(--accent-hover); }
   .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
   .btn-secondary:hover { background: var(--bg); }
+  .btn-danger { background: var(--danger-light); color: var(--danger); border: 1px solid var(--danger); }
+  .btn-danger:hover { background: var(--danger); color: white; }
 
   .form-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
 
@@ -260,23 +181,43 @@
   .search-bar input { flex: 1; }
   .divider { height: 1px; background: var(--border); margin: 1.5rem 0; }
 
+  /* Compras - lista de items */
+  .purchase-items-list { display: flex; flex-direction: column; gap: 8px; margin: 1rem 0; }
+  .purchase-item-row {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 10px 12px;
+  }
+  .purchase-item-row .item-name { flex: 1; font-size: 13px; font-weight: 500; }
+  .purchase-item-row .item-qty { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+  .purchase-item-row .btn-remove { padding: 4px 8px; font-size: 12px; }
+
+  /* Contabilidad */
+  .accounting-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 1.5rem; }
+  .accounting-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 1.25rem;
+  }
+  .accounting-card.ganancia { border-color: var(--accent); background: var(--accent-light); }
+  .accounting-card.perdida { border-color: var(--danger); background: var(--danger-light); }
+  .ac-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; }
+  .ac-value { font-family: var(--mono); font-size: 28px; font-weight: 500; }
+  .ac-value.green { color: var(--accent); }
+  .ac-value.red { color: var(--danger); }
+  .ac-value.neutral { color: var(--text); }
+
+  .sub-tab-content { display: none; }
+  .sub-tab-content.active { display: block; }
+
   @media (max-width: 600px) {
     .stats { grid-template-columns: 1fr 1fr; }
-    .form-grid, .form-grid.three { grid-template-columns: 1fr; }
+    .form-grid, .form-grid.three, .form-grid.four { grid-template-columns: 1fr; }
+    .accounting-grid { grid-template-columns: 1fr; }
     main { padding: 1rem; }
     header { padding: 0 1rem; }
     nav { padding: 0 1rem; }
   }
 </style>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#2d5a3d">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="AyM">
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js');
-  }
-</script>
 </head>
 <body>
 
@@ -315,7 +256,9 @@
     <button class="nav-btn active" onclick="showSection('stock', this)">Stock</button>
     <button class="nav-btn" onclick="showSection('agregar', this)">Agregar producto</button>
     <button class="nav-btn" onclick="showSection('venta', this)">Registrar venta</button>
-    <button class="nav-btn" onclick="showSection('historial', this)">Historial</button>
+    <button class="nav-btn" onclick="showSection('compras', this)">Registrar compra</button>
+    <button class="nav-btn" onclick="showSection('descuentos', this)">Descuentos</button>
+    <button class="nav-btn" onclick="showSection('contabilidad', this)">Contabilidad</button>
   </nav>
 
   <main>
@@ -338,8 +281,8 @@
         </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Nombre</th><th>SKU</th><th>Stock</th><th></th></tr></thead>
-            <tbody id="products-tbody"><tr><td colspan="4" class="empty-state">Cargando...</td></tr></tbody>
+            <thead><tr><th>Nombre</th><th>SKU</th><th>Stock</th><th>Precio venta</th><th></th></tr></thead>
+            <tbody id="products-tbody"><tr><td colspan="5" class="empty-state">Cargando...</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -352,40 +295,43 @@
         <p>Cargá un producto nuevo al inventario</p>
       </div>
       <div class="card">
-        <div class="form-grid three">
-          <div class="form-group"><label>Nombre del producto</label><input type="text" id="add-name" placeholder="Ej: Medialunas"></div>
-          <div class="form-group"><label>SKU / Código</label><input type="text" id="add-sku" placeholder="Ej: MED-001"></div>
+        <div class="form-grid four">
+          <div class="form-group"><label>Nombre del producto</label><input type="text" id="add-name" placeholder="Ej: Palito de esófago"></div>
+          <div class="form-group"><label>SKU / Código</label><input type="text" id="add-sku" placeholder="Ej: PAL-001"></div>
           <div class="form-group"><label>Stock inicial</label><input type="number" id="add-stock" placeholder="0" min="0"></div>
+          <div class="form-group"><label>Precio de venta ($)</label><input type="number" id="add-precio" placeholder="0.00" min="0" step="0.01"></div>
         </div>
         <div class="form-footer">
-          <span style="font-size:12px;color:var(--muted)">El SKU debe ser único por producto</span>
+          <span style="font-size:12px;color:var(--muted)">Podés dejar precio en 0 y cargarlo después</span>
           <button class="btn btn-primary" onclick="addProduct()">Agregar producto</button>
         </div>
       </div>
       <div class="divider"></div>
       <div class="section-header">
-       <h2>Sumar stock</h2>
+        <h2>Sumar stock</h2>
         <p>Buscá el producto y agregá unidades</p>
-         </div>
-<div class="card">
-  <div class="form-grid">
-    <div class="form-group">
-      <label>Producto</label>
-      <input type="text" id="upd-search" placeholder="Escribí el nombre o SKU..." oninput="filterUpdateProducts()" autocomplete="off">
-      <div id="upd-suggestions" style="background:var(--surface);border:1px solid var(--border);border-radius:7px;margin-top:4px;display:none;max-height:200px;overflow-y:auto;"></div>
-      <input type="hidden" id="upd-selected-id">
-      <input type="hidden" id="upd-selected-sku">
+      </div>
+      <div class="card">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Producto</label>
+            <input type="text" id="upd-search" placeholder="Escribí el nombre o SKU..." oninput="filterUpdateProducts()" autocomplete="off">
+            <div id="upd-suggestions" style="background:var(--surface);border:1px solid var(--border);border-radius:7px;margin-top:4px;display:none;max-height:200px;overflow-y:auto;"></div>
+            <input type="hidden" id="upd-selected-id">
+            <input type="hidden" id="upd-selected-sku">
+            <input type="hidden" id="upd-selected-precio">
+          </div>
+          <div class="form-group">
+            <label>Unidades a sumar</label>
+            <input type="number" id="upd-add-stock" placeholder="0" min="1">
+          </div>
+        </div>
+        <div class="form-footer">
+          <span style="font-size:12px;color:var(--muted)" id="upd-current-stock"></span>
+          <button class="btn btn-primary" onclick="addStock()">Sumar stock</button>
+        </div>
+      </div>
     </div>
-    <div class="form-group">
-      <label>Unidades a sumar</label>
-      <input type="number" id="upd-add-stock" placeholder="0" min="1">
-    </div>
-  </div>
-  <div class="form-footer">
-    <span style="font-size:12px;color:var(--muted)" id="upd-current-stock"></span>
-    <button class="btn btn-primary" onclick="addStock()">Sumar stock</button>
-  </div>
-</div>
 
     <!-- VENTA -->
     <div class="section" id="sec-venta">
@@ -395,7 +341,12 @@
       </div>
       <div class="card">
         <div class="form-grid">
-          <div class="form-group"><label>SKU del producto</label><input type="text" id="sale-sku" placeholder="Ej: MED-001"></div>
+          <div class="form-group">
+            <label>Producto</label>
+            <input type="text" id="sale-search" placeholder="Escribí el nombre del producto..." oninput="filterSaleProducts()" autocomplete="off">
+            <div id="sale-suggestions" style="background:var(--surface);border:1px solid var(--border);border-radius:7px;margin-top:4px;display:none;max-height:200px;overflow-y:auto;"></div>
+            <input type="hidden" id="sale-sku">
+          </div>
           <div class="form-group"><label>Cantidad vendida</label><input type="number" id="sale-qty" placeholder="1" min="1"></div>
         </div>
         <div class="form-footer">
@@ -405,21 +356,170 @@
       </div>
     </div>
 
-    <!-- HISTORIAL -->
-    <div class="section" id="sec-historial">
+    <!-- COMPRAS -->
+    <div class="section" id="sec-compras">
       <div class="section-header">
-        <h2>Historial de ventas</h2>
-        <p>Todas las ventas registradas</p>
+        <h2>Registrar compra</h2>
+        <p>Agregá los productos que compraste — el stock se suma automáticamente</p>
       </div>
       <div class="card">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Producto</label>
+            <input type="text" id="buy-search" placeholder="Escribí el nombre o SKU..." oninput="filterBuyProducts()" autocomplete="off">
+            <div id="buy-suggestions" style="background:var(--surface);border:1px solid var(--border);border-radius:7px;margin-top:4px;display:none;max-height:200px;overflow-y:auto;"></div>
+            <input type="hidden" id="buy-product-id">
+            <input type="hidden" id="buy-product-name">
+          </div>
+          <div class="form-group">
+            <label>Cantidad comprada</label>
+            <input type="number" id="buy-qty" placeholder="0" min="1">
+          </div>
+        </div>
+        <div style="margin-top:10px;text-align:right">
+          <button class="btn btn-secondary" onclick="addBuyItem()">+ Agregar a la lista</button>
+        </div>
+
+        <!-- Lista de items de la compra -->
+        <div id="buy-items-list" class="purchase-items-list" style="display:none"></div>
+
+        <div class="divider"></div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Precio total que pagaste ($)</label>
+            <input type="number" id="buy-total" placeholder="0.00" min="0" step="0.01">
+          </div>
+        </div>
+        <div class="form-footer">
+          <span style="font-size:12px;color:var(--muted)" id="buy-items-count">Ningún producto agregado todavía</span>
+          <button class="btn btn-primary" onclick="registerPurchase()">Registrar compra</button>
+        </div>
+      </div>
+    </div>
+<!-- DESCUENTOS -->
+<div class="section" id="sec-descuentos">
+  <div class="section-header">
+    <h2>Descuentos por paquete</h2>
+    <p>Armá combos de productos con un precio especial distinto a la suma individual</p>
+  </div>
+  <div class="card">
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Nombre del descuento</label>
+        <input type="text" id="disc-name" placeholder="Ej: Combo verano, Pack x3...">
+      </div>
+    </div>
+    <div class="form-grid" style="margin-top:12px">
+      <div class="form-group">
+        <label>Producto</label>
+        <input type="text" id="disc-search" placeholder="Escribí el nombre o SKU..." oninput="filterDiscProducts()" autocomplete="off">
+        <div id="disc-suggestions" style="background:var(--surface);border:1px solid var(--border);border-radius:7px;margin-top:4px;display:none;max-height:200px;overflow-y:auto;"></div>
+        <input type="hidden" id="disc-product-id">
+        <input type="hidden" id="disc-product-name">
+        <input type="hidden" id="disc-product-precio">
+      </div>
+      <div class="form-group">
+        <label>Cantidad</label>
+        <input type="number" id="disc-qty" placeholder="1" min="1">
+      </div>
+    </div>
+    <div style="margin-top:10px;text-align:right">
+      <button class="btn btn-secondary" onclick="addDiscItem()">+ Agregar producto al combo</button>
+    </div>
+
+    <div id="disc-items-list" class="purchase-items-list" style="display:none"></div>
+
+    <div id="disc-precio-normal" style="display:none;margin-top:12px;padding:10px 14px;background:var(--bg);border-radius:8px;font-size:13px;color:var(--muted)">
+      Precio normal (suma): <strong id="disc-sum" style="color:var(--text)">$0.00</strong>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Precio del combo ($)</label>
+        <input type="number" id="disc-precio" placeholder="0.00" min="0.01" step="0.01">
+      </div>
+    </div>
+    <div class="form-footer">
+      <span style="font-size:12px;color:var(--muted)" id="disc-items-count">Ningún producto agregado todavía</span>
+      <button class="btn btn-primary" onclick="saveDiscount()">Guardar descuento</button>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-header">
+    <h2>Descuentos guardados</h2>
+    <p>Todos los combos y precios especiales definidos</p>
+  </div>
+  <div class="card">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:1rem">
+      <button class="btn btn-secondary" onclick="loadDiscounts()">↺ Actualizar</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Nombre</th><th>Productos del combo</th><th>Precio normal</th><th>Precio combo</th><th>Ahorro</th><th></th></tr></thead>
+        <tbody id="discounts-tbody"><tr><td colspan="7" class="empty-state">Cargando...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+    <!-- CONTABILIDAD -->
+    <div class="section" id="sec-contabilidad">
+      <div class="section-header">
+        <h2>Contabilidad</h2>
+        <p>Resumen de ingresos, gastos y ganancia neta</p>
+      </div>
+
+      <div class="accounting-grid">
+        <div class="accounting-card">
+          <div class="ac-label">💰 Total vendido</div>
+          <div class="ac-value green" id="ac-ventas">—</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:6px">Precio de venta × cantidad</div>
+        </div>
+        <div class="accounting-card">
+          <div class="ac-label">🛒 Total gastado en compras</div>
+          <div class="ac-value red" id="ac-compras">—</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:6px">Suma de todas las compras</div>
+        </div>
+        <div class="accounting-card" id="ac-ganancia-card">
+          <div class="ac-label">📊 Ganancia neta</div>
+          <div class="ac-value neutral" id="ac-ganancia">—</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:6px">Ventas − Compras</div>
+        </div>
+      </div>
+
+      <!-- Subsolapas -->
+      <div style="display:flex;gap:2px;border-bottom:1px solid var(--border);margin-bottom:1rem">
+        <button class="nav-btn active" id="sub-ventas-btn" onclick="showSubTab('ventas')">Historial de ventas</button>
+        <button class="nav-btn" id="sub-compras-btn" onclick="showSubTab('compras')">Historial de compras</button>
+      </div>
+
+      <!-- Historial ventas -->
+      <div id="sub-ventas" class="card">
+        <div style="display:flex;justify-content:flex-end;margin-bottom:1rem">
+          <button class="btn btn-secondary" onclick="loadContabilidad()">↺ Actualizar</button>
+        </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>#</th><th>Producto</th><th>Cantidad</th></tr></thead>
-            <tbody id="sales-tbody"><tr><td colspan="3" class="empty-state">Cargando...</td></tr></tbody>
+            <thead><tr><th>#</th><th>Producto</th><th>Cantidad</th><th>Precio unitario</th><th>Total</th><th></th></tr></thead>
+            <tbody id="sales-tbody"><tr><td colspan="6" class="empty-state">Cargando...</td></tr></tbody>
           </table>
         </div>
-        <div style="margin-top:1rem;text-align:right">
-          <button class="btn btn-secondary" onclick="loadSales()">↺ Actualizar</button>
+      </div>
+
+      <!-- Historial compras -->
+      <div id="sub-compras" class="card" style="display:none">
+        <div style="display:flex;justify-content:flex-end;margin-bottom:1rem">
+          <button class="btn btn-secondary" onclick="loadContabilidad()">↺ Actualizar</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>#</th><th>Fecha</th><th>Productos</th><th>Total pagado</th><th></th></tr></thead>
+            <tbody id="purchases-tbody"><tr><td colspan="5" class="empty-state">Cargando...</td></tr></tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -427,33 +527,226 @@
   </main>
 </div>
 
+
+<!-- MODAL EDITAR PRODUCTO -->
+<div id="edit-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:center;justify-content:center;">
+  <div style="background:var(--surface);border-radius:12px;padding:2rem;width:100%;max-width:480px;margin:1rem;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+      <h3 style="font-size:16px;font-weight:500">Editar producto</h3>
+      <button onclick="closeEditModal()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted)">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <input type="hidden" id="edit-id">
+      <div class="form-group">
+        <label>Nombre</label>
+        <input type="text" id="edit-name">
+      </div>
+      <div class="form-group">
+        <label>SKU</label>
+        <input type="text" id="edit-sku">
+      </div>
+      <div class="form-group">
+        <label>Stock</label>
+        <input type="number" id="edit-stock" min="0">
+      </div>
+      <div class="form-group">
+        <label>Precio de venta ($)</label>
+        <input type="number" id="edit-precio" min="0" step="0.01">
+      </div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:1.5rem">
+      <button class="btn btn-secondary" onclick="closeEditModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveEdit()">Guardar cambios</button>
+    </div>
+  </div>
+</div>
 <div id="toast"></div>
 
+// ── DESCUENTOS ──
+let discItems = [];
+
+function filterDiscProducts() {
+  const q = document.getElementById('disc-search').value.toLowerCase();
+  const box = document.getElementById('disc-suggestions');
+  document.getElementById('disc-product-id').value = '';
+  if (!q) { box.style.display = 'none'; return; }
+  const matches = allProducts.filter(p =>
+    p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q)
+  ).slice(0, 8);
+  if (!matches.length) { box.style.display = 'none'; return; }
+  box.style.display = 'block';
+  box.innerHTML = matches.map(p => `
+    <div onclick="selectDiscProduct(${p.id}, '${p.name}', ${p.precio_venta || 0})"
+      style="padding:10px 12px;cursor:pointer;font-size:13px;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;align-items:center"
+      onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background=''">
+      <span>${p.name}</span>
+      <span class="sku-tag">${p.sku} · $${p.precio_venta != null ? p.precio_venta.toFixed(2) : '—'}</span>
+    </div>
+  `).join('');
+}
+
+function selectDiscProduct(id, name, precio) {
+  document.getElementById('disc-product-id').value = id;
+  document.getElementById('disc-product-name').value = name;
+  document.getElementById('disc-product-precio').value = precio;
+  document.getElementById('disc-search').value = name;
+  document.getElementById('disc-suggestions').style.display = 'none';
+}
+
+function addDiscItem() {
+  const product_id = parseInt(document.getElementById('disc-product-id').value);
+  const name = document.getElementById('disc-product-name').value;
+  const precio = parseFloat(document.getElementById('disc-product-precio').value) || 0;
+  const quantity = parseInt(document.getElementById('disc-qty').value);
+  if (!product_id) { toast('Seleccioná un producto de la lista', 'error'); return; }
+  if (isNaN(quantity) || quantity < 1) { toast('Ingresá una cantidad válida', 'error'); return; }
+  const existing = discItems.find(i => i.product_id === product_id);
+  if (existing) {
+    existing.quantity += quantity;
+  } else {
+    discItems.push({ product_id, name, quantity, precio });
+  }
+  renderDiscItems();
+  document.getElementById('disc-search').value = '';
+  document.getElementById('disc-product-id').value = '';
+  document.getElementById('disc-product-name').value = '';
+  document.getElementById('disc-product-precio').value = '';
+  document.getElementById('disc-qty').value = '';
+}
+
+function renderDiscItems() {
+  const list = document.getElementById('disc-items-list');
+  const counter = document.getElementById('disc-items-count');
+  const sumBox = document.getElementById('disc-precio-normal');
+  const sumEl = document.getElementById('disc-sum');
+  if (!discItems.length) {
+    list.style.display = 'none';
+    sumBox.style.display = 'none';
+    counter.textContent = 'Ningún producto agregado todavía';
+    return;
+  }
+  const sum = discItems.reduce((acc, i) => acc + (i.precio * i.quantity), 0);
+  list.style.display = 'flex';
+  sumBox.style.display = 'block';
+  sumEl.textContent = `$${sum.toFixed(2)}`;
+  counter.textContent = `${discItems.length} producto(s) en este combo`;
+  list.innerHTML = discItems.map((item, idx) => `
+    <div class="purchase-item-row">
+      <span class="item-name">${item.name}</span>
+      <span class="item-qty">${item.quantity} u. · $${(item.precio * item.quantity).toFixed(2)}</span>
+      <button class="btn btn-danger btn-remove" onclick="removeDiscItem(${idx})">✕</button>
+    </div>
+  `).join('');
+}
+
+function removeDiscItem(idx) {
+  discItems.splice(idx, 1);
+  renderDiscItems();
+}
+
+async function saveDiscount() {
+  const name = document.getElementById('disc-name').value.trim();
+  const precio_descuento = parseFloat(document.getElementById('disc-precio').value);
+  if (!name) { toast('Ingresá un nombre para el descuento', 'error'); return; }
+  if (!discItems.length) { toast('Agregá al menos un producto al combo', 'error'); return; }
+  if (isNaN(precio_descuento) || precio_descuento <= 0) { toast('Ingresá el precio del combo', 'error'); return; }
+  const body = {
+    name,
+    precio_descuento,
+    items: discItems.map(i => ({ product_id: i.product_id, quantity: i.quantity }))
+  };
+  try {
+    const res = await fetch(API + '/discounts/', {
+      method: 'POST', headers: authHeaders(),
+      body: JSON.stringify(body)
+    });
+    if (res.ok) {
+      toast('Descuento guardado correctamente');
+      discItems = [];
+      renderDiscItems();
+      document.getElementById('disc-name').value = '';
+      document.getElementById('disc-precio').value = '';
+      loadDiscounts();
+    } else {
+      const err = await res.json();
+      toast(err.detail || 'Error al guardar', 'error');
+    }
+  } catch { toast('No se pudo conectar con la API', 'error'); }
+}
+
+async function loadDiscounts() {
+  try {
+    const [discRes, productsRes] = await Promise.all([
+      fetch(API + '/discounts/', { headers: authHeaders() }),
+      fetch(API + '/products/', { headers: authHeaders() })
+    ]);
+    const discounts = await discRes.json();
+    const products = await productsRes.json();
+    const productMap = {};
+    products.forEach(p => productMap[p.id] = { name: p.name, precio: p.precio_venta });
+    const tbody = document.getElementById('discounts-tbody');
+    if (!discounts.length) {
+      tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No hay descuentos guardados todavía</td></tr>';
+      return;
+    }
+    tbody.innerHTML = discounts.map(d => {
+      const itemsText = d.items.map(i => {
+        const p = productMap[i.product_id];
+        return p ? `${p.name} ×${i.quantity}` : `#${i.product_id} ×${i.quantity}`;
+      }).join(', ');
+      const precioNormal = d.items.reduce((acc, i) => {
+        const p = productMap[i.product_id];
+        return acc + (p && p.precio ? p.precio * i.quantity : 0);
+      }, 0);
+      const ahorro = precioNormal > 0 ? precioNormal - d.precio_descuento : null;
+      const ahorroText = ahorro !== null && ahorro > 0
+        ? `<span style="color:var(--accent);font-weight:500">-$${ahorro.toFixed(2)}</span>`
+        : `<span style="color:var(--muted)">—</span>`;
+      const normalText = precioNormal > 0 ? `<span style="text-decoration:line-through;color:var(--muted)">$${precioNormal.toFixed(2)}</span>` : '—';
+      return `<tr>
+        <td><span class="sku-tag">#${d.id}</span></td>
+        <td><strong>${d.name}</strong></td>
+        <td style="font-size:12px;color:var(--muted)">${itemsText}</td>
+        <td>${normalText}</td>
+        <td><strong style="color:var(--accent)">$${d.precio_descuento.toFixed(2)}</strong></td>
+        <td>${ahorroText}</td>
+        <td><button class="btn btn-secondary" style="padding:4px 8px;font-size:12px;color:var(--danger);border-color:var(--danger)" onclick="deleteDiscount(${d.id})">✕</button></td>
+      </tr>`;
+    }).join('');
+  } catch {
+    document.getElementById('discounts-tbody').innerHTML =
+      '<tr><td colspan="7" class="empty-state">No se pudo conectar con la API</td></tr>';
+  }
+}
+
+async function deleteDiscount(id) {
+  if (!confirm('¿Eliminar este descuento?')) return;
+  try {
+    const res = await fetch(API + '/discounts/' + id, { method: 'DELETE', headers: authHeaders() });
+    if (res.ok) { toast('Descuento eliminado'); loadDiscounts(); }
+    else { toast('Error al eliminar', 'error'); }
+  } catch { toast('No se pudo conectar con la API', 'error'); }
+}
+
 <script>
-  const API = 'https://inventory-api-production-6d9d.up.railway.app'
+  const API = 'https://inventory-api-production-6d9d.up.railway.app';
   let allProducts = [];
+  let buyItems = []; // items de la compra en curso
 
   function getToken() { return localStorage.getItem('token'); }
   function authHeaders() { return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getToken() }; }
 
-  // --- LOGIN ---
   async function doLogin() {
     const username = document.getElementById('login-user').value.trim();
     const password = document.getElementById('login-pass').value;
     document.getElementById('login-error').textContent = '';
-
-    if (!username || !password) {
-      document.getElementById('login-error').textContent = 'Completá usuario y contraseña';
-      return;
-    }
-
+    if (!username || !password) { document.getElementById('login-error').textContent = 'Completá usuario y contraseña'; return; }
     try {
       const res = await fetch(API + '/token', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
       });
-
       if (res.ok) {
         const data = await res.json();
         localStorage.setItem('token', data.access_token);
@@ -461,9 +754,7 @@
       } else {
         document.getElementById('login-error').textContent = 'Usuario o contraseña incorrectos';
       }
-    } catch {
-      document.getElementById('login-error').textContent = 'No se pudo conectar con la API';
-    }
+    } catch { document.getElementById('login-error').textContent = 'No se pudo conectar con la API'; }
   }
 
   function logout() {
@@ -480,29 +771,28 @@
     loadProducts();
   }
 
-  // --- AUTO LOGIN si ya hay token ---
   if (getToken()) showApp();
 
-  // --- NAV ---
   function showSection(name, btn) {
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     document.getElementById('sec-' + name).classList.add('active');
     btn.classList.add('active');
     if (name === 'stock') loadProducts();
-    if (name === 'historial') loadSales();
+    if (name === 'venta') loadProducts();
     if (name === 'agregar') loadProducts();
+    if (name === 'compras') loadProducts();
+    if (name === 'descuentos') loadDiscounts();
+    if (name === 'contabilidad') { loadContabilidad(); showSubTab('ventas'); }
   }
 
-  // --- TOAST ---
   function toast(msg, type = 'success') {
     const t = document.getElementById('toast');
     t.textContent = msg;
     t.className = 'show ' + type;
-    setTimeout(() => t.className = '', 3000);
+    setTimeout(() => t.className = '', 3500);
   }
 
-  // --- API STATUS ---
   async function checkStatus() {
     try {
       const res = await fetch(API + '/products/', { headers: authHeaders() });
@@ -515,7 +805,6 @@
     }
   }
 
-  // --- PRODUCTS ---
   async function loadProducts() {
     try {
       const res = await fetch(API + '/products/', { headers: authHeaders() });
@@ -525,7 +814,7 @@
       updateStats(allProducts);
     } catch {
       document.getElementById('products-tbody').innerHTML =
-        '<tr><td colspan="4" class="empty-state">No se pudo conectar con la API</td></tr>';
+        '<tr><td colspan="5" class="empty-state">No se pudo conectar con la API</td></tr>';
     }
   }
 
@@ -538,7 +827,7 @@
   function renderProducts(products) {
     const tbody = document.getElementById('products-tbody');
     if (!products.length) {
-      tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No hay productos cargados todavía</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No hay productos cargados todavía</td></tr>';
       return;
     }
     tbody.innerHTML = products.map(p => {
@@ -547,11 +836,16 @@
         : p.stock < 10
           ? `<span class="stock-badge stock-low">${p.stock}</span>`
           : `<span class="stock-badge stock-ok">${p.stock}</span>`;
+      const precio = p.precio_venta != null ? `$${p.precio_venta.toFixed(2)}` : `<span style="color:var(--muted)">—</span>`;
       return `<tr>
         <td>${p.name} <span style="font-size:11px;color:var(--muted)">#${p.id}</span></td>
         <td><span class="sku-tag">${p.sku}</span></td>
         <td>${badge}</td>
-        <td><button class="btn btn-secondary" style="padding:4px 10px;font-size:12px;color:var(--danger);border-color:var(--danger)" onclick="deleteProduct(${p.id}, '${p.name}')">Eliminar</button></td>
+        <td>${precio}</td>
+        <td style="display:flex;gap:6px;">
+          <button class="btn btn-secondary" style="padding:4px 10px;font-size:12px;" onclick="openEditModal(${p.id}, '${p.name}', '${p.sku}', ${p.stock}, ${p.precio_venta ?? 'null'})">✏️ Editar</button>
+          <button class="btn btn-secondary" style="padding:4px 10px;font-size:12px;color:var(--danger);border-color:var(--danger)" onclick="deleteProduct(${p.id}, '${p.name}')">Eliminar</button>
+        </td>
       </tr>`;
     }).join('');
   }
@@ -566,38 +860,25 @@
   async function addProduct() {
     const name = document.getElementById('add-name').value.trim();
     const sku = document.getElementById('add-sku').value.trim();
-    const stock = parseInt(document.getElementById('add-stock').value);
-    if (!name || !sku || isNaN(stock)) { toast('Completá todos los campos', 'error'); return; }
+    const stock = parseInt(document.getElementById('add-stock').value) || 0;
+    const precio_venta = parseFloat(document.getElementById('add-precio').value) || null;
+    if (!name || !sku) { toast('Completá nombre y SKU', 'error'); return; }
     try {
       const res = await fetch(API + '/products/', {
         method: 'POST', headers: authHeaders(),
-        body: JSON.stringify({ name, sku, stock })
+        body: JSON.stringify({ name, sku, stock, precio_venta })
       });
       if (res.ok) {
         toast('Producto agregado correctamente');
         document.getElementById('add-name').value = '';
         document.getElementById('add-sku').value = '';
         document.getElementById('add-stock').value = '';
+        document.getElementById('add-precio').value = '';
+        loadProducts();
       } else {
         const err = await res.json();
         toast(err.detail || 'Error al agregar', 'error');
       }
-    } catch { toast('No se pudo conectar con la API', 'error'); }
-  }
-
-  async function updateProduct() {
-    const id = document.getElementById('upd-id').value;
-    const name = document.getElementById('upd-name').value.trim();
-    const sku = document.getElementById('upd-sku').value.trim();
-    const stock = parseInt(document.getElementById('upd-stock').value);
-    if (!id || !name || !sku || isNaN(stock)) { toast('Completá todos los campos', 'error'); return; }
-    try {
-      const res = await fetch(API + '/products/' + id, {
-        method: 'PUT', headers: authHeaders(),
-        body: JSON.stringify({ name, sku, stock })
-      });
-      if (res.ok) { toast('Producto actualizado'); }
-      else { const err = await res.json(); toast(err.detail || 'Error al actualizar', 'error'); }
     } catch { toast('No se pudo conectar con la API', 'error'); }
   }
 
@@ -608,6 +889,93 @@
       if (res.ok) { toast('Producto eliminado'); loadProducts(); }
       else { const err = await res.json(); toast(err.detail || 'Error al eliminar', 'error'); }
     } catch { toast('No se pudo conectar con la API', 'error'); }
+  }
+
+  // ── SUMAR STOCK ──
+  function filterUpdateProducts() {
+    const q = document.getElementById('upd-search').value.toLowerCase();
+    const box = document.getElementById('upd-suggestions');
+    document.getElementById('upd-selected-id').value = '';
+    document.getElementById('upd-current-stock').textContent = '';
+    if (!q) { box.style.display = 'none'; return; }
+    const matches = allProducts.filter(p =>
+      p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q)
+    ).slice(0, 8);
+    if (!matches.length) { box.style.display = 'none'; return; }
+    box.style.display = 'block';
+    box.innerHTML = matches.map(p => `
+      <div onclick="selectUpdateProduct(${p.id}, '${p.name}', '${p.sku}', ${p.stock}, ${p.precio_venta || 'null'})"
+        style="padding:10px 12px;cursor:pointer;font-size:13px;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;align-items:center"
+        onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background=''">
+        <span>${p.name}</span>
+        <span class="sku-tag">${p.sku} · ${p.stock} u.</span>
+      </div>
+    `).join('');
+  }
+
+  function selectUpdateProduct(id, name, sku, stock, precio) {
+    document.getElementById('upd-selected-id').value = id;
+    document.getElementById('upd-selected-sku').value = sku;
+    document.getElementById('upd-selected-precio').value = precio || '';
+    document.getElementById('upd-search').value = name;
+    document.getElementById('upd-suggestions').style.display = 'none';
+    document.getElementById('upd-current-stock').textContent = `Stock actual: ${stock} unidades`;
+  }
+
+  async function addStock() {
+    const id = document.getElementById('upd-selected-id').value;
+    const sku = document.getElementById('upd-selected-sku').value;
+    const precio_venta = parseFloat(document.getElementById('upd-selected-precio').value) || null;
+    const add = parseInt(document.getElementById('upd-add-stock').value);
+    const name = document.getElementById('upd-search').value.trim();
+    if (!id || isNaN(add) || add < 1) { toast('Seleccioná un producto y una cantidad', 'error'); return; }
+    const product = allProducts.find(p => p.id == id);
+    if (!product) { toast('Producto no encontrado', 'error'); return; }
+    const newStock = product.stock + add;
+    try {
+      const res = await fetch(API + '/products/' + id, {
+        method: 'PUT', headers: authHeaders(),
+        body: JSON.stringify({ name, sku, stock: newStock, precio_venta })
+      });
+      if (res.ok) {
+        toast(`Stock actualizado — ahora hay ${newStock} unidades`);
+        document.getElementById('upd-search').value = '';
+        document.getElementById('upd-selected-id').value = '';
+        document.getElementById('upd-add-stock').value = '';
+        document.getElementById('upd-current-stock').textContent = '';
+        loadProducts();
+      } else {
+        const err = await res.json();
+        toast(err.detail || 'Error al actualizar', 'error');
+      }
+    } catch { toast('No se pudo conectar con la API', 'error'); }
+  }
+
+  // ── VENTAS ──
+  function filterSaleProducts() {
+    const q = document.getElementById('sale-search').value.toLowerCase();
+    const box = document.getElementById('sale-suggestions');
+    document.getElementById('sale-sku').value = '';
+    if (!q) { box.style.display = 'none'; return; }
+    const matches = allProducts.filter(p =>
+      p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q)
+    ).slice(0, 8);
+    if (!matches.length) { box.style.display = 'none'; return; }
+    box.style.display = 'block';
+    box.innerHTML = matches.map(p => `
+      <div onclick="selectSaleProduct('${p.sku}', '${p.name}')"
+        style="padding:10px 12px;cursor:pointer;font-size:13px;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;align-items:center"
+        onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background=''">
+        <span>${p.name}</span>
+        <span class="sku-tag">${p.sku}</span>
+      </div>
+    `).join('');
+  }
+
+  function selectSaleProduct(sku, name) {
+    document.getElementById('sale-sku').value = sku;
+    document.getElementById('sale-search').value = name;
+    document.getElementById('sale-suggestions').style.display = 'none';
   }
 
   async function registerSale() {
@@ -622,6 +990,7 @@
       if (res.ok) {
         toast('Venta registrada — stock actualizado');
         document.getElementById('sale-sku').value = '';
+        document.getElementById('sale-search').value = '';
         document.getElementById('sale-qty').value = '';
       } else {
         const err = await res.json();
@@ -630,6 +999,175 @@
     } catch { toast('No se pudo conectar con la API', 'error'); }
   }
 
+  // ── COMPRAS ──
+  function filterBuyProducts() {
+    const q = document.getElementById('buy-search').value.toLowerCase();
+    const box = document.getElementById('buy-suggestions');
+    document.getElementById('buy-product-id').value = '';
+    if (!q) { box.style.display = 'none'; return; }
+    const matches = allProducts.filter(p =>
+      p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q)
+    ).slice(0, 8);
+    if (!matches.length) { box.style.display = 'none'; return; }
+    box.style.display = 'block';
+    box.innerHTML = matches.map(p => `
+      <div onclick="selectBuyProduct(${p.id}, '${p.name}')"
+        style="padding:10px 12px;cursor:pointer;font-size:13px;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;align-items:center"
+        onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background=''">
+        <span>${p.name}</span>
+        <span class="sku-tag">${p.sku}</span>
+      </div>
+    `).join('');
+  }
+
+  function selectBuyProduct(id, name) {
+    document.getElementById('buy-product-id').value = id;
+    document.getElementById('buy-product-name').value = name;
+    document.getElementById('buy-search').value = name;
+    document.getElementById('buy-suggestions').style.display = 'none';
+  }
+
+  function addBuyItem() {
+    const product_id = parseInt(document.getElementById('buy-product-id').value);
+    const name = document.getElementById('buy-product-name').value;
+    const quantity = parseInt(document.getElementById('buy-qty').value);
+
+    if (!product_id) { toast('Seleccioná un producto de la lista', 'error'); return; }
+    if (isNaN(quantity) || quantity < 1) { toast('Ingresá una cantidad válida', 'error'); return; }
+
+    // Si ya está en la lista, sumar cantidad
+    const existing = buyItems.find(i => i.product_id === product_id);
+    if (existing) {
+      existing.quantity += quantity;
+    } else {
+      buyItems.push({ product_id, name, quantity });
+    }
+
+    renderBuyItems();
+    document.getElementById('buy-search').value = '';
+    document.getElementById('buy-product-id').value = '';
+    document.getElementById('buy-product-name').value = '';
+    document.getElementById('buy-qty').value = '';
+  }
+
+  function renderBuyItems() {
+    const list = document.getElementById('buy-items-list');
+    const counter = document.getElementById('buy-items-count');
+    if (!buyItems.length) {
+      list.style.display = 'none';
+      counter.textContent = 'Ningún producto agregado todavía';
+      return;
+    }
+    list.style.display = 'flex';
+    counter.textContent = `${buyItems.length} producto(s) en esta compra`;
+    list.innerHTML = buyItems.map((item, idx) => `
+      <div class="purchase-item-row">
+        <span class="item-name">${item.name}</span>
+        <span class="item-qty">${item.quantity} unidades</span>
+        <button class="btn btn-danger btn-remove" onclick="removeBuyItem(${idx})">✕</button>
+      </div>
+    `).join('');
+  }
+
+  function removeBuyItem(idx) {
+    buyItems.splice(idx, 1);
+    renderBuyItems();
+  }
+
+  async function registerPurchase() {
+    if (!buyItems.length) { toast('Agregá al menos un producto a la compra', 'error'); return; }
+    const precio_total = parseFloat(document.getElementById('buy-total').value);
+    if (isNaN(precio_total) || precio_total <= 0) { toast('Ingresá el precio total que pagaste', 'error'); return; }
+
+    const body = {
+      precio_total,
+      items: buyItems.map(i => ({ product_id: i.product_id, quantity: i.quantity }))
+    };
+
+    try {
+      const res = await fetch(API + '/purchases/', {
+        method: 'POST', headers: authHeaders(),
+        body: JSON.stringify(body)
+      });
+      if (res.ok) {
+        toast('Compra registrada — stock actualizado');
+        buyItems = [];
+        renderBuyItems();
+        document.getElementById('buy-total').value = '';
+        loadProducts();
+      } else {
+        const err = await res.json();
+        toast(err.detail || 'Error al registrar la compra', 'error');
+      }
+    } catch { toast('No se pudo conectar con la API', 'error'); }
+  }
+
+
+  // ── MODAL EDITAR ──
+  function openEditModal(id, name, sku, stock, precio) {
+    document.getElementById('edit-id').value = id;
+    document.getElementById('edit-name').value = name;
+    document.getElementById('edit-sku').value = sku;
+    document.getElementById('edit-stock').value = stock;
+    document.getElementById('edit-precio').value = precio !== null && precio !== 'null' ? precio : '';
+    document.getElementById('edit-modal').style.display = 'flex';
+  }
+
+  function closeEditModal() {
+    document.getElementById('edit-modal').style.display = 'none';
+  }
+
+  async function saveEdit() {
+    const id = document.getElementById('edit-id').value;
+    const name = document.getElementById('edit-name').value.trim();
+    const sku = document.getElementById('edit-sku').value.trim();
+    const stock = parseInt(document.getElementById('edit-stock').value);
+    const precio_venta = parseFloat(document.getElementById('edit-precio').value) || null;
+    if (!name || !sku || isNaN(stock)) { toast('Completá todos los campos', 'error'); return; }
+    try {
+      const res = await fetch(API + '/products/' + id, {
+        method: 'PUT', headers: authHeaders(),
+        body: JSON.stringify({ name, sku, stock, precio_venta })
+      });
+      if (res.ok) {
+        toast('Producto actualizado correctamente');
+        closeEditModal();
+        loadProducts();
+      } else {
+        const err = await res.json();
+        toast(err.detail || 'Error al guardar', 'error');
+      }
+    } catch { toast('No se pudo conectar con la API', 'error'); }
+  }
+
+  // ── SUBSOLAPAS CONTABILIDAD ──
+  function showSubTab(tab) {
+    document.getElementById('sub-ventas').style.display = tab === 'ventas' ? 'block' : 'none';
+    document.getElementById('sub-compras').style.display = tab === 'compras' ? 'block' : 'none';
+    document.getElementById('sub-ventas-btn').classList.toggle('active', tab === 'ventas');
+    document.getElementById('sub-compras-btn').classList.toggle('active', tab === 'compras');
+  }
+
+  // ── BORRAR HISTORIAL (ya no se usa pero se mantiene por compatibilidad) ──
+  async function deleteSale(id) {
+    if (!confirm('¿Eliminar esta venta? El stock se va a restaurar automáticamente.')) return;
+    try {
+      const res = await fetch(API + '/sales/' + id, { method: 'DELETE', headers: authHeaders() });
+      if (res.ok) { toast('Venta eliminada — stock restaurado'); loadContabilidad(); loadProducts(); }
+      else { toast('Error al eliminar', 'error'); }
+    } catch { toast('No se pudo conectar con la API', 'error'); }
+  }
+
+  async function deletePurchase(id) {
+    if (!confirm('¿Eliminar esta compra? El stock se va a descontar automáticamente.')) return;
+    try {
+      const res = await fetch(API + '/purchases/' + id, { method: 'DELETE', headers: authHeaders() });
+      if (res.ok) { toast('Compra eliminada — stock actualizado'); loadContabilidad(); loadProducts(); }
+      else { toast('Error al eliminar', 'error'); }
+    } catch { toast('No se pudo conectar con la API', 'error'); }
+  }
+
+  // ── HISTORIAL VENTAS ──
   async function loadSales() {
     try {
       const [salesRes, productsRes] = await Promise.all([
@@ -639,82 +1177,77 @@
       const sales = await salesRes.json();
       const products = await productsRes.json();
       const productMap = {};
-      products.forEach(p => productMap[p.id] = p.sku);
-
+      products.forEach(p => productMap[p.id] = { name: p.name, precio: p.precio_venta });
       const tbody = document.getElementById('sales-tbody');
       if (!sales.length) {
-        tbody.innerHTML = '<tr><td colspan="3" class="empty-state">No hay ventas registradas todavía</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No hay ventas registradas todavía</td></tr>';
         return;
       }
-      tbody.innerHTML = sales.map(s => `<tr>
-        <td><span class="sku-tag">#${s.id}</span></td>
-        <td>${productMap[s.product_id] || 'Producto #' + s.product_id}</td>
-        <td>${s.quantity} unidades</td>
-      </tr>`).join('');
+      tbody.innerHTML = sales.map(s => {
+        const prod = productMap[s.product_id] || { name: 'Producto #' + s.product_id, precio: null };
+        const precioUnit = prod.precio != null ? `$${prod.precio.toFixed(2)}` : '—';
+        const total = prod.precio != null ? `$${(prod.precio * s.quantity).toFixed(2)}` : '—';
+        return `<tr>
+          <td><span class="sku-tag">#${s.id}</span></td>
+          <td>${prod.name}</td>
+          <td>${s.quantity} u.</td>
+          <td>${precioUnit}</td>
+          <td><strong>${total}</strong></td>
+          <td><button class="btn btn-secondary" style="padding:4px 8px;font-size:12px;color:var(--danger);border-color:var(--danger)" onclick="deleteSale(${s.id})">✕</button></td>
+        </tr>`;
+      }).join('');
     } catch {
       document.getElementById('sales-tbody').innerHTML =
-        '<tr><td colspan="3" class="empty-state">No se pudo conectar con la API</td></tr>';
+        '<tr><td colspan="6" class="empty-state">No se pudo conectar con la API</td></tr>';
     }
-    function filterUpdateProducts() {
-  const q = document.getElementById('upd-search').value.toLowerCase();
-  const box = document.getElementById('upd-suggestions');
-  document.getElementById('upd-selected-id').value = '';
-  document.getElementById('upd-current-stock').textContent = '';
-  if (!q) { box.style.display = 'none'; return; }
-  const matches = allProducts.filter(p =>
-    p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q)
-  ).slice(0, 8);
-  if (!matches.length) { box.style.display = 'none'; return; }
-  box.style.display = 'block';
-  box.innerHTML = matches.map(p => `
-    <div onclick="selectUpdateProduct(${p.id}, '${p.name}', '${p.sku}', ${p.stock})"
-      style="padding:10px 12px;cursor:pointer;font-size:13px;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;align-items:center"
-      onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background=''">
-      <span>${p.name}</span>
-      <span class="sku-tag">${p.sku} · ${p.stock} u.</span>
-    </div>
-  `).join('');
-}
+  }
 
-function selectUpdateProduct(id, name, sku, stock) {
-  document.getElementById('upd-selected-id').value = id;
-  document.getElementById('upd-selected-sku').value = sku;
-  document.getElementById('upd-search').value = name;
-  document.getElementById('upd-suggestions').style.display = 'none';
-  document.getElementById('upd-current-stock').textContent = `Stock actual: ${stock} unidades`;
-}
+  // ── CONTABILIDAD ──
+  async function loadContabilidad() {
+    try {
+      const [summaryRes, purchasesRes, productsRes] = await Promise.all([
+        fetch(API + '/purchases/summary', { headers: authHeaders() }),
+        fetch(API + '/purchases/', { headers: authHeaders() }),
+        fetch(API + '/products/', { headers: authHeaders() })
+      ]);
+      const summary = await summaryRes.json();
+      const purchases = await purchasesRes.json();
+      const products = await productsRes.json();
+      const productMap = {};
+      products.forEach(p => productMap[p.id] = p.name);
 
-async function addStock() {
-  const id = document.getElementById('upd-selected-id').value;
-  const sku = document.getElementById('upd-selected-sku').value;
-  const add = parseInt(document.getElementById('upd-add-stock').value);
-  const name = document.getElementById('upd-search').value.trim();
+      document.getElementById('ac-ventas').textContent = `$${summary.total_ventas.toFixed(2)}`;
+      document.getElementById('ac-compras').textContent = `$${summary.total_compras.toFixed(2)}`;
+      const ganancia = summary.ganancia_neta;
+      const gEl = document.getElementById('ac-ganancia');
+      const gCard = document.getElementById('ac-ganancia-card');
+      gEl.textContent = `$${ganancia.toFixed(2)}`;
+      gEl.className = 'ac-value ' + (ganancia > 0 ? 'green' : ganancia < 0 ? 'red' : 'neutral');
+      gCard.className = 'accounting-card ' + (ganancia > 0 ? 'ganancia' : ganancia < 0 ? 'perdida' : '');
 
-  if (!id || isNaN(add) || add < 1) { toast('Seleccioná un producto y una cantidad', 'error'); return; }
+      // Tabla de compras
+      const tbody = document.getElementById('purchases-tbody');
+      if (!purchases.length) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No hay compras registradas todavía</td></tr>';
+      } else {
+        tbody.innerHTML = purchases.map(p => {
+          const fecha = new Date(p.fecha).toLocaleDateString('es-AR', { day:'2-digit', month:'2-digit', year:'numeric' });
+          const itemsText = p.items.map(i => `${productMap[i.product_id] || '#'+i.product_id} ×${i.quantity}`).join(', ');
+          return `<tr>
+            <td><span class="sku-tag">#${p.id}</span></td>
+            <td>${fecha}</td>
+            <td style="font-size:12px;color:var(--muted)">${itemsText}</td>
+            <td><strong>$${p.precio_total.toFixed(2)}</strong></td>
+            <td><button class="btn btn-secondary" style="padding:4px 8px;font-size:12px;color:var(--danger);border-color:var(--danger)" onclick="deletePurchase(${p.id})">✕</button></td>
+          </tr>`;
+        }).join('');
+      }
 
-  const product = allProducts.find(p => p.id == id);
-  if (!product) { toast('Producto no encontrado', 'error'); return; }
-
-  const newStock = product.stock + add;
-
-  try {
-    const res = await fetch(API + '/products/' + id, {
-      method: 'PUT', headers: authHeaders(),
-      body: JSON.stringify({ name, sku, stock: newStock })
-    });
-    if (res.ok) {
-      toast(`Stock actualizado — ahora hay ${newStock} unidades`);
-      document.getElementById('upd-search').value = '';
-      document.getElementById('upd-selected-id').value = '';
-      document.getElementById('upd-add-stock').value = '';
-      document.getElementById('upd-current-stock').textContent = '';
-      loadProducts();
-    } else {
-      const err = await res.json();
-      toast(err.detail || 'Error al actualizar', 'error');
+      await loadSales();
+    } catch {
+      document.getElementById('purchases-tbody').innerHTML =
+        '<tr><td colspan="5" class="empty-state">No se pudo conectar con la API</td></tr>';
     }
-  } catch { toast('No se pudo conectar con la API', 'error'); }
-}
   }
 </script>
 </body>
