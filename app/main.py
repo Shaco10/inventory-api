@@ -4,7 +4,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from fastapi import HTTPException
 
 from app.database import engine, Base
-from app.routers import products, sales, purchases
+from app.routers import products, sales, purchases, discounts
 from app.auth import USERS, verify_password, create_token, get_current_user
 
 app = FastAPI(title="Inventario API")
@@ -29,3 +29,4 @@ def login(form: OAuth2PasswordRequestForm = Depends()):
 app.include_router(products.router, dependencies=[Depends(get_current_user)])
 app.include_router(sales.router, dependencies=[Depends(get_current_user)])
 app.include_router(purchases.router, dependencies=[Depends(get_current_user)])
+app.include_router(discounts.router, dependencies=[Depends(get_current_user)])

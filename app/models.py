@@ -47,3 +47,26 @@ class PurchaseItem(Base):
 
     purchase = relationship("Purchase", back_populates="items")
     product = relationship("Product", back_populates="purchase_items")
+
+
+class Discount(Base):
+    __tablename__ = "discounts"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    precio_descuento = Column(Float, nullable=False)
+    fecha = Column(DateTime(timezone=True), server_default=func.now())
+
+    items = relationship("DiscountItem", back_populates="discount")
+
+
+class DiscountItem(Base):
+    __tablename__ = "discount_items"
+
+    id = Column(Integer, primary_key=True, index=True)
+    discount_id = Column(Integer, ForeignKey("discounts.id"), nullable=False)
+    product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
+    quantity = Column(Integer, nullable=False)
+
+    discount = relationship("Discount", back_populates="items")
+    product = relationship("Product")

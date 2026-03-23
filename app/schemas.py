@@ -73,3 +73,34 @@ class PurchaseResponse(BaseModel):
     precio_total: float
     fecha: datetime
     items: List[PurchaseItemResponse]
+
+
+# =========================
+# DISCOUNT
+# =========================
+
+class DiscountItemCreate(BaseModel):
+    product_id: int
+    quantity: int = Field(gt=0)
+
+
+class DiscountCreate(BaseModel):
+    name: str
+    precio_descuento: float = Field(gt=0)
+    items: List[DiscountItemCreate]
+
+
+class DiscountItemResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    product_id: int
+    quantity: int
+
+
+class DiscountResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    name: str
+    precio_descuento: float
+    fecha: datetime
+    items: List[DiscountItemResponse]

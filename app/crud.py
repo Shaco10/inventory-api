@@ -153,3 +153,47 @@ def delete_purchase(db: Session, purchase_id: int):
     db.delete(purchase)
     db.commit()
     return {"message": "Compra eliminada y stock actualizado"}
+
+
+# =========================
+# DESCUENTOS
+# =========================
+
+def create_discount(db: Session, discount: schemas.DiscountCreate):
+    for item in discount.items:
+        product = get_product_by_id(db, item.product_id)
+        if not product:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Producto con ID {item.product_id} no encontrado."
+            )
+
+    db_discount = models.Discount(name=discount.name, precio_descuento=discount.precio_descuento)
+    db.add(db_discount)
+    db.flush()
+
+    for item in discount.items:
+        db_item = models.DiscountItem(
+            discount_id=db_discount.id,
+            product_id=item.product_id,
+            quantity=item.quantity
+        )
+        db.add(db_item)
+
+    db.commit()
+    db.refresh(db_discount)
+    return db_discount
+
+
+def get_discounts(db: Session):
+    return db.query(models.Discount).order_by(models.Discount.fecha.desc()).all()
+
+
+def delete_discount(db: Session, discount_id: int):
+    discount = db.query(models.Discount).filter(models.Discount.id == discount_id).first()
+    if not discount:
+        raise HTTPException(status_code=404, detail="Descuento no encontrado")
+    db.query(models.DiscountItem).filter(models.DiscountItem.discount_id == discount_id).delete()
+    db.delete(discount)
+    db.commit()
+    return {"message": "Descuento eliminado"}
