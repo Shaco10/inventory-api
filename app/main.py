@@ -9,8 +9,16 @@ from app.auth import USERS, verify_password, create_token, get_current_user
 
 app = FastAPI(title="Inventario API")
 
-import subprocess
-subprocess.run(["python", "-m", "alembic", "upgrade", "head"], check=True)
+Base.metadata.create_all(bind=engine, checkfirst=True)
+
+# Agregar columnas nuevas si no existen
+from sqlalchemy import text
+with engine.connect() as conn:
+    try:
+        conn.execute(text("ALTER TABLE sales ADD COLUMN precio_unitario_real REAL"))
+        conn.commit()
+    except Exception:
+        pass  # La columna ya existe
 
 app.add_middleware(
     CORSMiddleware,
