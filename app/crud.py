@@ -61,6 +61,8 @@ def make_sale(db: Session, sale: schemas.SaleCreate):
 
     product.stock -= sale.quantity
 
+    print(f"DEBUG sale.precio_unitario_real = {sale.precio_unitario_real}")
+
     # Usar el precio real si se mandó, si no usar precio_venta del producto
     precio_real = sale.precio_unitario_real if sale.precio_unitario_real is not None else product.precio_venta
 
@@ -73,6 +75,9 @@ def make_sale(db: Session, sale: schemas.SaleCreate):
     db.commit()
     db.refresh(db_sale)
     return db_sale
+
+def get_sales(db: Session):
+    return db.query(models.Sale).all()
 
 def get_sales_total(db: Session):
     sales = db.query(models.Sale).all()
