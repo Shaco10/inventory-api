@@ -61,16 +61,30 @@ def make_sale(db: Session, sale: schemas.SaleCreate):
 
     product.stock -= sale.quantity
 
-    db_sale = models.Sale(product_id=product.id, quantity=sale.quantity)
+    # Usar el precio real si se mandó, si no usar precio_venta del producto
+    precio_real = sale.precio_unitario_real if sale.precio_unitario_real is not None else product.precio_venta
+
+    db_sale = models.Sale(
+        product_id=product.id,
+        quantity=sale.quantity,
+        precio_unitario_real=precio_real  # ← guardar el precio real
+    )
     db.add(db_sale)
     db.commit()
     db.refresh(db_sale)
-
     return db_sale
 
-
-def get_sales(db: Session):
-    return db.query(models.Sale).all()
+def get_sales_total(db: Session):
+    sales = db.query(models.Sale).all()
+    total = 0.0
+    for sale in sales:
+        if sale.precio_unitario_real is not None:
+            total += sale.precio_unitario_real * sale.quantity
+        else:
+            product = get_product_by_id(db, sale.product_id)
+            if product and product.precio_venta:
+                total += product.precio_venta * sale.quantity
+    return total
 
 
 # =========================
@@ -117,18 +131,6 @@ def get_purchase_total(db: Session):
     result = db.query(models.Purchase).all()
     return sum(p.precio_total for p in result)
 
-
-def get_sales_total(db: Session):
-    """Calcula el total de ingresos por ventas usando precio_venta de cada producto"""
-    sales = db.query(models.Sale).all()
-    total = 0.0
-    for sale in sales:
-        product = get_product_by_id(db, sale.product_id)
-        if product and product.precio_venta:
-            total += product.precio_venta * sale.quantity
-    return total
-
-
 def delete_sale(db: Session, sale_id: int):
     sale = db.query(models.Sale).filter(models.Sale.id == sale_id).first()
     if not sale:
@@ -154,46 +156,26 @@ def delete_purchase(db: Session, purchase_id: int):
     db.commit()
     return {"message": "Compra eliminada y stock actualizado"}
 
-
-# =========================
-# DESCUENTOS
-# =========================
-
-def create_discount(db: Session, discount: schemas.DiscountCreate):
+def create_discount(db, discount):
     for item in discount.items:
-        product = get_product_by_id(db, item.product_id)
-        if not product:
-            raise HTTPException(
-                status_code=404,
-                detail=f"Producto con ID {item.product_id} no encontrado."
-            )
-
+        if not get_product_by_id(db, item.product_id):
+            raise HTTPException(status_code=404, detail=f"Producto ID {item.product_id} no encontrado.")
     db_discount = models.Discount(name=discount.name, precio_descuento=discount.precio_descuento)
     db.add(db_discount)
     db.flush()
-
     for item in discount.items:
-        db_item = models.DiscountItem(
-            discount_id=db_discount.id,
-            product_id=item.product_id,
-            quantity=item.quantity
-        )
-        db.add(db_item)
-
+        db.add(models.DiscountItem(discount_id=db_discount.id, product_id=item.product_id, quantity=item.quantity))
     db.commit()
     db.refresh(db_discount)
     return db_discount
 
-
-def get_discounts(db: Session):
+def get_discounts(db):
     return db.query(models.Discount).order_by(models.Discount.fecha.desc()).all()
 
-
-def delete_discount(db: Session, discount_id: int):
-    discount = db.query(models.Discount).filter(models.Discount.id == discount_id).first()
-    if not discount:
+def delete_discount(db, discount_id):
+    d = db.query(models.Discount).filter(models.Discount.id == discount_id).first()
+    if not d:
         raise HTTPException(status_code=404, detail="Descuento no encontrado")
-    db.query(models.DiscountItem).filter(models.DiscountItem.discount_id == discount_id).delete()
-    db.delete(discount)
+    db.delete(d)
     db.commit()
     return {"message": "Descuento eliminado"}
