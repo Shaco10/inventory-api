@@ -37,6 +37,7 @@ class ProductResponse(BaseModel):
 class SaleCreate(BaseModel):
     sku: str
     quantity: int = Field(gt=0)
+    precio_unitario_real: Optional[float] = Field(default=None, ge=0)
 
 
 class SaleResponse(BaseModel):
@@ -53,6 +54,7 @@ class SaleResponse(BaseModel):
 class PurchaseItemCreate(BaseModel):
     product_id: int
     quantity: int = Field(gt=0)
+    precio_unitario_real: Optional[float] = Field(default=None, ge=0)
 
 
 class PurchaseCreate(BaseModel):
@@ -82,6 +84,7 @@ class PurchaseResponse(BaseModel):
 class DiscountItemCreate(BaseModel):
     product_id: int
     quantity: int = Field(gt=0)
+    precio_unitario_real: Optional[float] = Field(default=None, ge=0)
 
 
 class DiscountCreate(BaseModel):
